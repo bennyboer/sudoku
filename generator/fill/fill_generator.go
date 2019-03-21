@@ -14,6 +14,7 @@ type FillGenerator struct{}
 
 // Will fill a Sudoku randomly from scratch.
 func (g *FillGenerator) Generate(difficulty float32) *model.Sudoku {
+	// gsudoku := model.EmptySudoku()
 	// TODO Implement
 	return nil
 }
