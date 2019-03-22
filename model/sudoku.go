@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -10,6 +11,8 @@ const (
 	SudokuSize int = 9
 	// Number of cells in rows, columns of a block.
 	BlockSize int = 3
+	// Count of neighbours each cell has.
+	NeighbourCount int = 20
 )
 
 // A model for a Sudoku.
@@ -20,18 +23,67 @@ type Sudoku struct {
 
 // Get a new empty Sudoku.
 func EmptySudoku() *Sudoku {
-	return &Sudoku{Cells: *createCells()}
+	return &Sudoku{Cells: *createCells(nil)}
 }
 
-// Generate empty Sudoku cells.
-func createCells() *[][]SudokuCell {
+// Load a Sudoku with the passed values.
+func LoadSudoku(values *[][]int) (*Sudoku, error) {
+	// Validate input first
+	if values == nil {
+		return nil, errors.New("Cannot load Sudoku from no nil pointer")
+	}
+
+	if len(*values) != SudokuSize {
+		return nil, errors.New("Cannot load Sudoku from slice with less or more than 9 rows")
+	}
+
+	for _, row := range *values {
+		if len(row) != SudokuSize {
+			return nil, errors.New("Cannot load Sudoku from slice with less or more than 9 columns")
+		}
+
+		for _, value := range row {
+			if value < 0 || value > SudokuSize {
+				return nil, errors.New("The values to load need to be in range [0; 9]")
+			}
+		}
+	}
+
+	return &Sudoku{Cells: *createCells(values)}, nil
+}
+
+// Save a Sudoku.
+func (s *Sudoku) SaveSudoku() *[][]int {
+	values := make([][]int, SudokuSize)
+
+	for rowIndex, row := range s.Cells {
+		values[rowIndex] = make([]int, SudokuSize)
+
+		for columnIndex, cell := range row {
+			values[rowIndex][columnIndex] = cell.Value()
+		}
+	}
+
+	return &values
+}
+
+// Generate Sudoku cells filled with the passed values or if nil is given empty cells.
+func createCells(values *[][]int) *[][]SudokuCell {
 	cells := make([][]SudokuCell, SudokuSize, SudokuSize)
 
 	for row := range cells {
 		cells[row] = make([]SudokuCell, SudokuSize, SudokuSize)
 
 		for column := range cells[row] {
-			cells[row][column] = *NewSudokuCell(row, column, 0)
+			value := 0
+
+			if values != nil {
+				value = (*values)[row][column]
+			}
+
+			newCell, _ := NewSudokuCell(row, column, value)
+
+			cells[row][column] = *newCell
 		}
 	}
 
@@ -51,10 +103,10 @@ func (s *Sudoku) String() string {
 
 	for rowIndex, rowCells := range s.Cells {
 		for columnIndex, cell := range rowCells {
-			if cell.Value == 0 {
+			if cell.value == 0 {
 				sb.WriteString("_ ")
 			} else {
-				sb.WriteString(fmt.Sprintf("%d ", cell.Value))
+				sb.WriteString(fmt.Sprintf("%d ", cell.value))
 			}
 
 			if (columnIndex+1)%BlockSize == 0 {

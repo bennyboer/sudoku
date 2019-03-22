@@ -18,14 +18,23 @@ type SudokuCell struct {
 }
 
 // Create a new Sudoku cell.
-func NewSudokuCell(row int, column int, value int) *SudokuCell {
+func NewSudokuCell(row int, column int, value int) (*SudokuCell, error) {
+	if (row < 0 || row >= SudokuSize) ||
+		(column < 0 || column >= SudokuSize) {
+		return nil, errors.New("Row and column coordinates of a Sudoku cell must be in range [0; 8]")
+	}
+
+	if value < 0 || value > 9 {
+		return nil, errors.New("Value is not in range [0; 9]")
+	}
+
 	return &SudokuCell{
 		position: Coordinates{
 			Row:    row,
 			Column: column,
 		},
 		value: value,
-	}
+	}, nil
 }
 
 func (c *SudokuCell) Value() int {
@@ -79,6 +88,9 @@ func (c *SudokuCell) SetValue(value int) error {
 		}
 	}
 
+	// Finally set the value
+	c.value = value
+
 	return nil
 }
 
@@ -105,7 +117,7 @@ func (c *SudokuCell) initNeighbours(cellsPtr *[][]SudokuCell) {
 	blockStartRow := (c.position.Row / BlockSize) * BlockSize
 	blockStartColumn := (c.position.Column / BlockSize) * BlockSize
 
-	allNeighbours := make([]*SudokuCell, SudokuSize-2)
+	allNeighbours := make([]*SudokuCell, NeighbourCount)
 
 	rowNeighbourCounter := 0
 	columnNeighbourCounter := 0
@@ -173,4 +185,9 @@ func (c *SudokuCell) initTaken() {
 	}
 
 	c.taken = taken
+}
+
+// Get a String representation of a Sudoku cell.
+func (c *SudokuCell) String() string {
+	return fmt.Sprintf("%d at %s", c.value, c.position.String())
 }
