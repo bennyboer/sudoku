@@ -33,18 +33,18 @@ func (c *SudokuCell) Value() int {
 }
 
 // Set a new value to this Sudoku cell.
-// Will return a boolean if it worked successfully and if not an error as well.
-func (c *SudokuCell) SetValue(value int) (success bool, e error) {
-	oldValue := c.value
+// Will return nil error if it worked successfully.
+func (c *SudokuCell) SetValue(value int) error {
+	oldValue := c.valueg
 
 	// Check if value already set -> do nothing.
 	if value == oldValue {
-		return true, nil
+		return nil
 	}
 
 	// Check if value in range.
 	if value < 0 || value > SudokuSize {
-		return false, errors.New(fmt.Sprintf("Sudoku cell can only hold values between %d and %d", 0, SudokuSize))
+		return errors.New(fmt.Sprintf("Sudoku cell can only hold values between %d and %d", 0, SudokuSize))
 	}
 
 	// Notify neighbours that old value is no more used by this cell
@@ -79,7 +79,7 @@ func (c *SudokuCell) SetValue(value int) (success bool, e error) {
 		}
 	}
 
-	return true, nil
+	return nil
 }
 
 func (c *SudokuCell) Position() Coordinates {
