@@ -1,4 +1,4 @@
-package cell
+package model
 
 /// 2-dimensional coordinates.
 type Coordinates struct {

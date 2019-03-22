@@ -6,15 +6,12 @@ import (
 	"time"
 )
 
-// Size of a Sudoku (amount of cells in rows, columns and blocks).
-const sudoku_size int = 9;
-
 // Generator randomly filling a newly created Sudoku.
 type FillGenerator struct{}
 
 // Will fill a Sudoku randomly from scratch.
 func (g *FillGenerator) Generate(difficulty float32) *model.Sudoku {
-	// gsudoku := model.EmptySudoku()
+	//sudoku := model.EmptySudoku()
 	// TODO Implement
 	return nil
 }
