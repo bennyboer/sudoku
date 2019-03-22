@@ -35,7 +35,7 @@ func (c *SudokuCell) Value() int {
 // Set a new value to this Sudoku cell.
 // Will return nil error if it worked successfully.
 func (c *SudokuCell) SetValue(value int) error {
-	oldValue := c.valueg
+	oldValue := c.value
 
 	// Check if value already set -> do nothing.
 	if value == oldValue {
