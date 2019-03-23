@@ -186,6 +186,23 @@ func (c *SudokuCell) initTaken() {
 	c.taken = taken
 }
 
+// Check if cell is considered "empty".
+func (c *SudokuCell) IsEmpty() bool {
+	return c.value == 0
+}
+
+// Check whether this cells value occurs in one of its neighbours.
+func (c *SudokuCell) HasCollision() bool {
+	if c.IsEmpty() {
+		// Empty cell cannot collide with other cell values.
+		return false
+	}
+
+	occurrences, found := c.taken[c.value]
+
+	return found && occurrences > 0
+}
+
 // Get a String representation of a Sudoku cell.
 func (c *SudokuCell) String() string {
 	return fmt.Sprintf("%d at %s", c.value, c.position.String())
