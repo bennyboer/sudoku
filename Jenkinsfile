@@ -15,11 +15,11 @@ pipeline {
                     REVERSED=$(echo $LAST_LINE | rev);
                     LAST_PART=$(echo $REVERSED | cut -d ' ' -f 1);
                     COVERAGE=$(echo $LAST_PART | rev);
-                    COVERAGE=$(echo $COVERAGE | cut -d '.' -f 1);
-                    if [ "$COVERAGE" -ge "90" ]; then
-                        echo "Great! Code coverage is sufficient!"
+                    COVERAGEINT=$(echo $COVERAGE | cut -d '.' -f 1);
+                    if [ "$COVERAGEINT" -ge "90" ]; then
+                        echo "Great! Code coverage of $COVERAGE is sufficient!"
                     else
-                        echo "Code coverage insufficient, we need at least 90%!"
+                        echo "Code coverage of $COVERAGE insufficient, we need at least 90%!"
                     fi
                 '''
             }
