@@ -6,8 +6,23 @@ pipeline {
                 docker { image 'obraun/vss-jenkins' }
             }
             steps {
-                sh 'echo go test -v'
-                sh 'echo go test -bench=.'
+                sh 'go test ./... -coverprofile cover.out -v'
+                sh 'go test ./... -bench=.'
+
+                // Check that code coverage was > 90 %
+                sh '''
+                    LAST_LINE=$(go tool cover -func cover.out | tail -1);
+                    REVERSED=$(echo $LAST_LINE | rev);
+                    LAST_PART=$(echo $REVERSED | cut -d ' ' -f 1);
+                    COVERAGE=$(echo $LAST_PART | rev);
+                    COVERAGEINT=$(echo $COVERAGE | cut -d '.' -f 1);
+                    if [ "$COVERAGEINT" -ge "90" ]; then
+                        echo "Great! Code coverage of $COVERAGE is sufficient!"
+                    else
+                        echo "Code coverage of $COVERAGE insufficient, we need at least 90%!"
+                        exit 1
+                    fi
+                '''
             }
         }
         stage('Lint') {
@@ -15,7 +30,7 @@ pipeline {
                 docker { image 'obraun/vss-jenkins' }
             }   
             steps {
-                sh 'golangci-lint run --enable-all'
+                sh 'golangci-lint run --enable-all --disable goimports'
             }
         }
         stage('Build Docker Image') {

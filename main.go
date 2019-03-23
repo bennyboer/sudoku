@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
+)
 
 func main() {
-	fmt.Println("Hello World");
+	fmt.Printf("%v", model.EmptySudoku())
 }
