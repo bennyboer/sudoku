@@ -1,7 +1,6 @@
 package model
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 )
@@ -30,21 +29,21 @@ func EmptySudoku() *Sudoku {
 func LoadSudoku(values *[][]int) (*Sudoku, error) {
 	// Validate input first
 	if values == nil {
-		return nil, errors.New("Cannot load Sudoku from no nil pointer")
+		return nil, fmt.Errorf("cannot load Sudoku from no nil pointer")
 	}
 
 	if len(*values) != SudokuSize {
-		return nil, errors.New("Cannot load Sudoku from slice with less or more than 9 rows")
+		return nil, fmt.Errorf("cannot load Sudoku from slice with less or more than 9 rows")
 	}
 
 	for _, row := range *values {
 		if len(row) != SudokuSize {
-			return nil, errors.New("Cannot load Sudoku from slice with less or more than 9 columns")
+			return nil, fmt.Errorf("cannot load Sudoku from slice with less or more than 9 columns")
 		}
 
 		for _, value := range row {
 			if value < 0 || value > SudokuSize {
-				return nil, errors.New("The values to load need to be in range [0; 9]")
+				return nil, fmt.Errorf("the values to load need to be in range [0; 9]")
 			}
 		}
 	}
@@ -69,10 +68,10 @@ func (s *Sudoku) SaveSudoku() *[][]int {
 
 // Generate Sudoku cells filled with the passed values or if nil is given empty cells.
 func createCells(values *[][]int) *[][]SudokuCell {
-	cells := make([][]SudokuCell, SudokuSize, SudokuSize)
+	cells := make([][]SudokuCell, SudokuSize)
 
 	for row := range cells {
-		cells[row] = make([]SudokuCell, SudokuSize, SudokuSize)
+		cells[row] = make([]SudokuCell, SudokuSize)
 
 		for column := range cells[row] {
 			value := 0

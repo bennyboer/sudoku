@@ -1,7 +1,6 @@
 package model
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -21,11 +20,11 @@ type SudokuCell struct {
 func NewSudokuCell(row int, column int, value int) (*SudokuCell, error) {
 	if (row < 0 || row >= SudokuSize) ||
 		(column < 0 || column >= SudokuSize) {
-		return nil, errors.New("Row and column coordinates of a Sudoku cell must be in range [0; 8]")
+		return nil, fmt.Errorf("row and column coordinates of a Sudoku cell must be in range [0; 8]")
 	}
 
 	if value < 0 || value > 9 {
-		return nil, errors.New("Value is not in range [0; 9]")
+		return nil, fmt.Errorf("ralue is not in range [0; 9]")
 	}
 
 	return &SudokuCell{
@@ -53,7 +52,7 @@ func (c *SudokuCell) SetValue(value int) error {
 
 	// Check if value in range.
 	if value < 0 || value > SudokuSize {
-		return errors.New(fmt.Sprintf("Sudoku cell can only hold values between %d and %d", 0, SudokuSize))
+		return fmt.Errorf("sudoku cell can only hold values between %d and %d", 0, SudokuSize)
 	}
 
 	// Notify neighbours that old value is no more used by this cell

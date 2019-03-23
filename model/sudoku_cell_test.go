@@ -18,22 +18,22 @@ func TestNewSudokuCell(t *testing.T) {
 		t.Errorf("cell.Position(): Position should have been %v while it was %v", correctPos, cell.Position())
 	}
 
-	cell, e = NewSudokuCell(-4, 234, 4)
+	_, e = NewSudokuCell(-4, 234, 4)
 	if e == nil {
 		t.Errorf("NewSudokuCell(-4, 234, 4): Expected to throw error because of negative value -4")
 	}
 
-	cell, e = NewSudokuCell(345, -6, 4)
+	_, e = NewSudokuCell(345, -6, 4)
 	if e == nil {
 		t.Errorf("NewSudokuCell(345, -6, 4): Expected to throw error because of too high value 345")
 	}
 
-	cell, e = NewSudokuCell(2, 3, -1)
+	_, e = NewSudokuCell(2, 3, -1)
 	if e == nil {
 		t.Errorf("NewSudokuCell(2, 3, -5): Expected to throw error because of invalid value")
 	}
 
-	cell, e = NewSudokuCell(2, 3, 10)
+	_, e = NewSudokuCell(2, 3, 10)
 	if e == nil {
 		t.Errorf("NewSudokuCell(2, 3, 10): Expected to throw error because of invalid value")
 	}
