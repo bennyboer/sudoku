@@ -83,8 +83,16 @@ func TestSudokuCell_SetValue(t *testing.T) {
 	if middle.Value() != 2 {
 		t.Errorf("SudokuCell.Value(): should give 2, but gave %d", middle.Value())
 	}
+}
 
-	e = middle.SetValue(-1)
+func TestSudokuCell_SetValue_InvalidInput(t *testing.T) {
+	// We need to initialize a complete Sudoku first for SetValue to work properly.
+	sudoku := EmptySudoku()
+
+	// Get middle Sudoku cell
+	middle := sudoku.Cells[4][4]
+
+	e := middle.SetValue(-1)
 	if e == nil {
 		t.Errorf("SudokuCell.SetValue(-1): Expected to throw an error but it dit not")
 	}
@@ -92,5 +100,27 @@ func TestSudokuCell_SetValue(t *testing.T) {
 	e = middle.SetValue(10)
 	if e == nil {
 		t.Errorf("SudokuCell.SetValue(10): Expected to throw an error but it dit not")
+	}
+}
+
+func TestSudokuCell_SetValue_ValueAlreadySet(t *testing.T) {
+	// We need to initialize a complete Sudoku first for SetValue to work properly.
+	sudoku := EmptySudoku()
+
+	// Get middle Sudoku cell
+	middle := sudoku.Cells[4][4]
+
+	if middle.Value() != 0 {
+		t.Errorf("Value should have been 0")
+	}
+
+	e := middle.SetValue(0)
+
+	if e != nil {
+		t.Errorf("Should have returned no error")
+	}
+
+	if middle.Value() != 0 {
+		t.Errorf("Value should have not updated")
 	}
 }

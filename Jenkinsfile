@@ -6,8 +6,11 @@ pipeline {
                 docker { image 'obraun/vss-jenkins' }
             }
             steps {
-                sh 'go test ./... -v -cover'
+                sh 'go test ./... -coverprofile cover.out -v'
                 sh 'go test ./... -bench=.'
+
+                // Check that code coverage was > 90 %
+                sh 'go tool cover -func cover.out | tail -1'
             }
         }
         stage('Lint') {
