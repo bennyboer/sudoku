@@ -10,7 +10,7 @@ pipeline {
                 sh 'go test ./... -bench=.'
 
                 // Check that code coverage was > 90 %
-                sh 'go tool cover -func cover.out | tail -1'
+                sh 'go tool cover -func cover.out | tail -1 | rev | cut -d' ' -f1 | rev'
             }
         }
         stage('Lint') {
