@@ -6,7 +6,7 @@ pipeline {
                 docker { image 'obraun/vss-jenkins' }
             }
             steps {
-                sh 'go test ./... -coverprofile cover.out -v'
+                sh 'go test ./... -cover'
                 sh 'go test ./... -bench=.'
             }
         }
