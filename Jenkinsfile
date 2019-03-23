@@ -20,6 +20,7 @@ pipeline {
                         echo "Great! Code coverage of $COVERAGE is sufficient!"
                     else
                         echo "Code coverage of $COVERAGE insufficient, we need at least 90%!"
+                        exit 1
                     fi
                 '''
             }
