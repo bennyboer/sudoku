@@ -6,8 +6,8 @@ pipeline {
                 docker { image 'obraun/vss-jenkins' }
             }
             steps {
-                sh 'echo go test ./... -v -cover'
-                sh 'echo go test ./... -bench'
+                sh 'go test ./... -v -cover'
+                sh 'go test ./... -bench'
             }
         }
         stage('Lint') {
