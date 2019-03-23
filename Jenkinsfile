@@ -10,7 +10,14 @@ pipeline {
                 sh 'go test ./... -bench=.'
 
                 // Check that code coverage was > 90 %
-                sh "go tool cover -func cover.out | tail -1 | rev | cut -d ' ' -f 1 | rev | cat"
+                sh """
+                    LAST_LINE=$(go tool cover -func cover.out | tail -1);
+                    REVERSED=$(echo $LAST_LINE | rev);
+                    LAST_PART=$(echo $REVERSED | cut -d ' ' -f 1);
+                    COVERAGE=$(echo $LAST_PART | rev);
+                    echo $COVERAGE;
+                """
+                // sh "go tool cover -func cover.out | tail -1 | rev | cut -d ' ' -f 1 | rev | cat"
             }
         }
         stage('Lint') {
