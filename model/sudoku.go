@@ -69,7 +69,7 @@ func createCells(values *[9][9]int) *[][]SudokuCell {
 			value := 0
 
 			if values != nil {
-				value = (*values)[row][column]
+				value = values[row][column]
 			}
 
 			newCell, _ := NewSudokuCell(row, column, value)
