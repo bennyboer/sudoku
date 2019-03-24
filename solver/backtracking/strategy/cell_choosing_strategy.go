@@ -7,12 +7,8 @@ import (
 
 // Strategy used to find the next empty cell in a Sudoku for the backtracking algorithm.
 type CellChoosingStrategy interface {
-	// Initialize the strategy with the passed Sudoku.
-	Initialize(sudoku *model.Sudoku)
-	// Find the next cell.
-	// May return an error if the strategy is not initialized.
-	// Returns nil if there are no more cells.
-	FindNext() (*model.SudokuCell, error)
+	// Get empty cells.
+	Get(sudoku *model.Sudoku) *[]*model.SudokuCell
 }
 
 // Create a strategy instance.

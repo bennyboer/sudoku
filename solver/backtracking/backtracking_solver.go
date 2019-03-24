@@ -11,24 +11,44 @@ type Solver struct {
 }
 
 // Solve the passed Sudoku.
-func (s *Solver) Solve(sudoku *model.Sudoku) error {
+// Return if the Sudoku was solvable.
+func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 	var cellChooser strategy.CellChoosingStrategy
 	if str, e := strategy.Create(s.CellChooserType); e != nil {
-		return e
+		return false, e
 	} else {
 		cellChooser = str
 	}
 
-	cellChooser.Initialize(sudoku)
+	emptyCells := *cellChooser.Get(sudoku)
 
-	nextEmptyCell, e := cellChooser.FindNext()
-	if e != nil {
-		return e
+	for i := 0; i < len(emptyCells); {
+		cell := emptyCells[i]
+
+		success := false
+		for value := cell.Value() + 1; value <= 9; value++ {
+			cell.SetValue(value)
+
+			if !cell.HasCollision() {
+				success = true
+				break
+			}
+		}
+
+		if success {
+			i++ // Next empty cell
+		} else {
+			// "Backtrack": Set value again to 0 and try again with last cell
+			cell.SetValue(0)
+
+			// First and foremost, check if backtracking is possible
+			if i > 0 {
+				i-- // Backtracking is possible -> Get last cell
+			} else {
+				return false, nil // Not solvable
+			}
+		}
 	}
 
-	for nextEmptyCell != nil {
-		// TODO Implement algorithm
-	}
-
-	return nil
+	return true, nil
 }

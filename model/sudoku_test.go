@@ -113,7 +113,7 @@ func TestSudoku_SaveSudoku(t *testing.T) {
 	}
 	for row := 0; row < 9; row++ {
 		for column := 0; column < 9; column++ {
-			_ = sudoku.Cells[row][column].SetValue(valuesToSet[row][column])
+			sudoku.Cells[row][column].SetValue(valuesToSet[row][column])
 		}
 	}
 
@@ -210,7 +210,7 @@ func TestSudoku_IsValid(t *testing.T) {
 		t.Errorf("The Sudoku\n%s\nis valid but claims to be invalid", sudoku.String())
 	}
 
-	_ = sudoku.Cells[0][0].SetValue(3)
+	sudoku.Cells[0][0].SetValue(3)
 	if sudoku.IsValid() {
 		t.Errorf("The Sudoku\n%s\nis invalid but claims to be valid", sudoku.String())
 	}
