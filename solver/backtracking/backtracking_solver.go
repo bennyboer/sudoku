@@ -13,11 +13,9 @@ type Solver struct {
 // Solve the passed Sudoku.
 // Return if the Sudoku was solvable.
 func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
-	var cellChooser strategy.CellChoosingStrategy
-	if str, e := strategy.Create(s.CellChooserType); e != nil {
+	cellChooser, e := strategy.Create(s.CellChooserType)
+	if e != nil {
 		return false, e
-	} else {
-		cellChooser = str
 	}
 
 	emptyCells := *cellChooser.Get(sudoku)

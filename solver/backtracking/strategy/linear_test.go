@@ -23,22 +23,26 @@ func TestLinearCellChooser_Get(t *testing.T) {
 
 	emptyCells := *cellChooser.Get(sudoku)
 	if len(emptyCells) != 49 {
-		t.Errorf("Should have the number of empty cells correctly. Expected: %d, got: %d", countOfEmptyCells, len(emptyCells))
+		t.Errorf("Should have the number of empty cells correctly. Expected: %d, got: %d",
+			countOfEmptyCells, len(emptyCells))
 	}
 
 	nextEmptyCell := emptyCells[0]
 	if nextEmptyCell.Position().Row != 0 && nextEmptyCell.Position().Column != 0 {
-		t.Errorf("Expected first empty cell to have position (0, 0); got (%d, %d)", nextEmptyCell.Position().Row, nextEmptyCell.Position().Column)
+		t.Errorf("Expected first empty cell to have position (0, 0); got (%d, %d)",
+			nextEmptyCell.Position().Row, nextEmptyCell.Position().Column)
 	}
 
 	nextEmptyCell = emptyCells[1]
 	if nextEmptyCell.Position().Row != 0 && nextEmptyCell.Position().Column != 3 {
-		t.Errorf("Expected first empty cell to have position (0, 3); got (%d, %d)", nextEmptyCell.Position().Row, nextEmptyCell.Position().Column)
+		t.Errorf("Expected first empty cell to have position (0, 3); got (%d, %d)",
+			nextEmptyCell.Position().Row, nextEmptyCell.Position().Column)
 	}
 
 	nextEmptyCell = emptyCells[6]
 	if nextEmptyCell.Position().Row != 1 && nextEmptyCell.Position().Column != 1 {
-		t.Errorf("Expected first empty cell to have position (1, 1); got (%d, %d)", nextEmptyCell.Position().Row, nextEmptyCell.Position().Column)
+		t.Errorf("Expected first empty cell to have position (1, 1); got (%d, %d)",
+			nextEmptyCell.Position().Row, nextEmptyCell.Position().Column)
 	}
 
 	sudoku, _ = model.LoadSudoku(&[9][9]int{

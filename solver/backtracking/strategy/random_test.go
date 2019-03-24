@@ -23,7 +23,8 @@ func TestRandomCellChooser_Get(t *testing.T) {
 
 	emptyCells := *cellChooser.Get(sudoku)
 	if len(emptyCells) != 49 {
-		t.Errorf("Should have the number of empty cells correctly. Expected: %d, got: %d", countOfEmptyCells, len(emptyCells))
+		t.Errorf("Should have the number of empty cells correctly. Expected: %d, got: %d",
+			countOfEmptyCells, len(emptyCells))
 	}
 
 	sudoku, _ = model.LoadSudoku(&[9][9]int{
