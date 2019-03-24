@@ -75,11 +75,7 @@ func TestSudokuCell_SetValue(t *testing.T) {
 		t.Errorf("SudokuCell.Value(): should have been an empty value cell but its value was %d", middle.Value())
 	}
 
-	e := middle.SetValue(2)
-	if e != nil {
-		t.Errorf("SudokuCell.SetValue(2): should throw no error: %s", e.Error())
-	}
-
+	middle.SetValue(2)
 	if middle.Value() != 2 {
 		t.Errorf("SudokuCell.Value(): should give 2, but gave %d", middle.Value())
 	}
@@ -92,14 +88,14 @@ func TestSudokuCell_SetValue_InvalidInput(t *testing.T) {
 	// Get middle Sudoku cell
 	middle := sudoku.Cells[4][4]
 
-	e := middle.SetValue(-1)
-	if e == nil {
-		t.Errorf("SudokuCell.SetValue(-1): Expected to throw an error but it dit not")
+	middle.SetValue(-1)
+	if middle.Value() != 0 {
+		t.Errorf("SudokuCell.SetValue(-1): Expected to set value to 0")
 	}
 
-	e = middle.SetValue(10)
-	if e == nil {
-		t.Errorf("SudokuCell.SetValue(10): Expected to throw an error but it dit not")
+	middle.SetValue(10)
+	if middle.Value() != 0 {
+		t.Errorf("SudokuCell.SetValue(10): Expected to set value to 0")
 	}
 }
 
@@ -114,12 +110,7 @@ func TestSudokuCell_SetValue_ValueAlreadySet(t *testing.T) {
 		t.Errorf("Value should have been 0")
 	}
 
-	e := middle.SetValue(0)
-
-	if e != nil {
-		t.Errorf("Should have returned no error")
-	}
-
+	middle.SetValue(0)
 	if middle.Value() != 0 {
 		t.Errorf("Value should have not updated")
 	}
@@ -157,18 +148,18 @@ func TestSudokuCell_SetValue_NeighbourNotification(t *testing.T) {
 		t.Errorf("Cell should have found value 3 to be already taken two times")
 	}
 
-	_ = middle.SetValue(0)
+	middle.SetValue(0)
 	if occurrences, taken := anotherCell.taken[3]; !taken || occurrences != 1 {
 		t.Errorf("Cell should have found value 3 to be still used by another cell")
 	}
 
 	other3Cell := sudoku.Cells[4][6]
-	_ = other3Cell.SetValue(0)
+	other3Cell.SetValue(0)
 	if occurrences, taken := anotherCell.taken[3]; taken || occurrences != 0 {
 		t.Errorf("Cell should have found value 3 to be free")
 	}
 
-	_ = middle.SetValue(1)
+	middle.SetValue(1)
 	if occurrences, taken := other3Cell.taken[1]; !taken || occurrences != 2 {
 		t.Errorf("The other 3 valued cell should have observed two cells in its neighbours to have value 1")
 	}
@@ -206,12 +197,12 @@ func TestSudokuCell_HasCollision(t *testing.T) {
 		t.Errorf("Expected middle cell value to collide with the value of another cell")
 	}
 
-	_ = middle.SetValue(9)
+	middle.SetValue(9)
 	if middle.HasCollision() {
 		t.Errorf("Expected cell to not have an collision")
 	}
 
-	_ = middle.SetValue(0)
+	middle.SetValue(0)
 	if middle.HasCollision() {
 		t.Errorf("Cell cannot have a collision when its value is empty")
 	}
