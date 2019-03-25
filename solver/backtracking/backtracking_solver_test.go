@@ -136,3 +136,58 @@ func TestSolver_Solve_NotSolvable(t *testing.T) {
 		t.Errorf("Expected solved Sudoku to be valid!")
 	}
 }
+
+func TestSolver_HasUniqueSolution(t *testing.T) {
+	solver := Solver{CellChooserType: strategy.Linear}
+
+	empty := model.EmptySudoku()
+	hasUniqueSolution, _ := solver.HasUniqueSolution(*empty)
+
+	if hasUniqueSolution {
+		t.Errorf("Expected empty Sudoku to have a lot of solutions and not an unique one")
+	}
+
+	sudoku, _ := model.LoadSudoku(&[9][9]int{
+		{0, 0, 5, 3, 0, 0, 0, 0, 0},
+		{8, 0, 0, 0, 0, 0, 0, 2, 0},
+		{0, 7, 0, 0, 1, 0, 5, 0, 0},
+		{4, 0, 0, 0, 0, 5, 3, 0, 0},
+		{0, 1, 0, 0, 7, 0, 0, 0, 6},
+		{0, 0, 3, 2, 0, 0, 0, 8, 0},
+		{0, 6, 0, 5, 0, 0, 0, 0, 9},
+		{0, 0, 4, 0, 0, 0, 0, 3, 0},
+		{0, 0, 0, 0, 0, 9, 7, 0, 0},
+	})
+	hasUniqueSolution, _ = solver.HasUniqueSolution(*sudoku)
+
+	if !hasUniqueSolution {
+		t.Errorf("Expected Sudoku to only have one unique solution.")
+	}
+}
+
+func TestSolver_HasUniqueSolution_Errors(t *testing.T) {
+	solver := Solver{CellChooserType: strategy.CellChoosingStrategyType(5)}
+
+	empty := model.EmptySudoku()
+	_, e := solver.HasUniqueSolution(*empty)
+	if e == nil {
+		t.Errorf("Expected to throw error because of incorrect cell choosing strategy type")
+	}
+
+	notSolvableSudoku, _ := model.LoadSudoku(&[9][9]int{
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 0, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+	})
+	solver = Solver{CellChooserType: strategy.Linear}
+	solvable, _ := solver.HasUniqueSolution(*notSolvableSudoku)
+	if solvable {
+		t.Errorf("Expected Sudoku to be unsolvable")
+	}
+}
