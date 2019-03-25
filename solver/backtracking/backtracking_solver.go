@@ -74,7 +74,7 @@ func (s *Solver) solve(sudoku *model.Sudoku,
 	values := *valuesLeftPtr
 
 	i := startCellIndex
-	for ; i < len(emptyCells); {
+	for i < len(emptyCells) {
 		cell := emptyCells[i]
 
 		success := false
