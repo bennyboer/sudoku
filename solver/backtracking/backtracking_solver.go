@@ -66,7 +66,10 @@ func (s *Solver) getConfigurationFor(sudoku *model.Sudoku) (*[]*model.SudokuCell
 // len(emptyCells) == len(valuesLeftPtr)
 // Specify the startCellIndex (range [0; len(emptyCells) - 1)) in case you want to alter the algorithm behavior,
 // otherwise just pass 0.
-func (s *Solver) solve(sudoku *model.Sudoku, emptyCellsPtr *[]*model.SudokuCell, valuesLeftPtr *[][]int, startCellIndex int) bool {
+func (s *Solver) solve(sudoku *model.Sudoku,
+	emptyCellsPtr *[]*model.SudokuCell,
+	valuesLeftPtr *[][]int,
+	startCellIndex int) bool {
 	emptyCells := *emptyCellsPtr
 	values := *valuesLeftPtr
 
