@@ -15,8 +15,8 @@ func (p *HiddenSingle) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[i
 	pv := *possibleValuesRef
 
 	for block := 0; block < model.SudokuSize; block++ {
-		startRow := block / model.BlockSize * model.BlockSize;
-		startColumn := (block * model.BlockSize) % model.SudokuSize;
+		startRow := block / model.BlockSize * model.BlockSize
+		startColumn := (block * model.BlockSize) % model.SudokuSize
 		for value := 1; value < model.SudokuSize; value++ {
 			isValueUnique := false
 			var uniqueRow int

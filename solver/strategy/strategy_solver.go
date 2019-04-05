@@ -90,5 +90,6 @@ func initPatterns() []pattern.Pattern {
 	return []pattern.Pattern{
 		&pattern.NakedSingle{},
 		&pattern.HiddenSingle{},
+		&pattern.NakedPair{},
 	}[:]
 }
