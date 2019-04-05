@@ -207,3 +207,64 @@ func TestSudokuCell_HasCollision(t *testing.T) {
 		t.Errorf("Cell cannot have a collision when its value is empty")
 	}
 }
+
+func TestSudokuCell_PossibleValues(t *testing.T) {
+	sudoku, _ := LoadSudoku(&[9][9]int{
+		{0, 1, 2, 3, 4, 5, 6, 7, 8},
+		{0, 0, 0, 0, 1, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{2, 0, 0, 0, 0, 0, 3, 9, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+	})
+
+	middle := sudoku.Cells[4][4]
+	possibleValues := middle.PossibleValues()
+	expected := map[int]bool{
+		5: false,
+		6: false,
+		7: false,
+		8: false,
+	}
+
+	for _, value := range possibleValues {
+		taken, ok := expected[value]
+
+		if !ok || taken {
+			t.Errorf("Expected value %d to be possible", value)
+		}
+
+		expected[value] = true
+	}
+
+	// Check if all values in the expected map have been there!
+	for key, value := range expected {
+		if !value {
+			t.Errorf("Expected value %d to be found in the possible values", key)
+		}
+	}
+}
+
+func TestSudokuCell_Neighbours(t *testing.T) {
+	sudoku, _ := LoadSudoku(&[9][9]int{
+		{0, 1, 2, 3, 4, 5, 6, 7, 8},
+		{0, 0, 0, 0, 1, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{2, 0, 0, 0, 0, 0, 3, 9, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+	})
+
+	cell := sudoku.Cells[0][0]
+	neighbours := cell.Neighbours()
+
+	if neighbours != &cell.neighbours {
+		t.Errorf("Expected cell neighbours to be the same object")
+	}
+}

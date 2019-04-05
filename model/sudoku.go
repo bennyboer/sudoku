@@ -17,7 +17,7 @@ const (
 // A model for a Sudoku.
 type Sudoku struct {
 	// All cells of a sudoku.
-	Cells [][]SudokuCell
+	Cells [][]*SudokuCell
 }
 
 // Get a new empty Sudoku.
@@ -59,11 +59,11 @@ func (s *Sudoku) SaveSudoku() *[][]int {
 }
 
 // Generate Sudoku cells filled with the passed values or if nil is given empty cells.
-func createCells(values *[9][9]int) *[][]SudokuCell {
-	cells := make([][]SudokuCell, SudokuSize)
+func createCells(values *[9][9]int) *[][]*SudokuCell {
+	cells := make([][]*SudokuCell, SudokuSize)
 
 	for row := 0; row < SudokuSize; row++ {
-		cells[row] = make([]SudokuCell, SudokuSize)
+		cells[row] = make([]*SudokuCell, SudokuSize)
 
 		for column := 0; column < SudokuSize; column++ {
 			value := 0
@@ -74,7 +74,7 @@ func createCells(values *[9][9]int) *[][]SudokuCell {
 
 			newCell, _ := NewSudokuCell(row, column, value)
 
-			cells[row][column] = *newCell
+			cells[row][column] = newCell
 		}
 	}
 
