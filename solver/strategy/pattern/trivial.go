@@ -39,22 +39,7 @@ func (p *Trivial) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bo
 				}
 
 				if onlyOnePossibleValue {
-					// Fill cell in Sudoku and update possible value lookup
-					cell := sudoku.Cells[row][column]
-					cell.SetValue(onlyPossibleValue)
-
-					// Update possible value lookup
-					(*pv[row][column])[onlyPossibleValue] = false
-					// Update neighbour lookups
-					for _, neighbour := range cell.Neighbours().All {
-						position := neighbour.Position()
-
-						// Set as "no more possible" in lookup
-						lookupPtr := pv[position.Row][position.Column]
-						if lookupPtr != nil {
-							(*lookupPtr)[onlyPossibleValue] = false // Mark the value as "no more possible"
-						}
-					}
+					updateValueInSudokuAndLookup(sudoku, possibleValuesRef, row, column, onlyPossibleValue)
 
 					changed = true
 				}
