@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestTrivial_Apply_ShouldChange(t *testing.T) {
+func TestNakedSingle_Apply_ShouldChange(t *testing.T) {
 	sudoku, _ := model.LoadSudoku(&[9][9]int{
 		{0, 0, 0, 0, 1, 0, 0, 0, 0},
 		{0, 0, 0, 0, 2, 0, 0, 0, 0},
@@ -20,7 +20,7 @@ func TestTrivial_Apply_ShouldChange(t *testing.T) {
 	})
 
 	possibleValueLookupRef := util.PreparePossibleValueLookup(sudoku)
-	pattern := Trivial{}
+	pattern := NakedSingle{}
 
 	changed := pattern.Apply(sudoku, possibleValueLookupRef)
 
@@ -33,7 +33,7 @@ func TestTrivial_Apply_ShouldChange(t *testing.T) {
 	}
 }
 
-func TestTrivial_Apply_ShouldNotChange(t *testing.T) {
+func TestNakedSingle_Apply_ShouldNotChange(t *testing.T) {
 	sudoku, _ := model.LoadSudoku(&[9][9]int{
 		{0, 0, 0, 0, 1, 0, 0, 0, 0},
 		{0, 0, 0, 0, 2, 0, 0, 0, 0},
@@ -47,7 +47,7 @@ func TestTrivial_Apply_ShouldNotChange(t *testing.T) {
 	})
 
 	possibleValueLookupRef := util.PreparePossibleValueLookup(sudoku)
-	pattern := Trivial{}
+	pattern := NakedSingle{}
 
 	changed := pattern.Apply(sudoku, possibleValueLookupRef)
 

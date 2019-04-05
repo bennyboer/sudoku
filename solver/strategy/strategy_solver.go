@@ -20,13 +20,29 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 	beforeS := fmt.Sprintf("%v", sudoku)             // TODO Remove
 	debugPrintPossibleValues(possibleValueLookupRef) // TODO Remove
 
-	changed := true
-	currentPattern := patterns[0] // TODO Select pattern automatically
-	for changed {
-		changed = currentPattern.Apply(sudoku, possibleValueLookupRef)
+	for patternIndex := 0; patternIndex < len(patterns); {
+		currentPattern := patterns[patternIndex]
 
-		debugPrintPossibleValues(possibleValueLookupRef)
-		fmt.Println("-----")
+		changedAtLeastOnce := false // Whether the current pattern changed something at least in one iteration
+		changed := true
+		for changed {
+			changed = currentPattern.Apply(sudoku, possibleValueLookupRef)
+
+			debugPrintPossibleValues(possibleValueLookupRef) // TODO Remove
+			fmt.Println("-----")                             // TODO Remove
+
+			if changed {
+				changedAtLeastOnce = true
+			}
+		}
+
+		if changedAtLeastOnce {
+			// Go back to the first pattern, since the Sudoku has been changed by the current pattern.
+			// New opportunities may have risen.
+			patternIndex = 0
+		} else {
+			patternIndex++
+		}
 	}
 
 	afterS := fmt.Sprintf("%v", sudoku) // TODO Remove
@@ -34,7 +50,7 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 	fmt.Printf("Before:\n%s\n\n", beforeS) // TODO Remove
 	fmt.Printf("After:\n%s\n\n", afterS)   // TODO Remove
 
-	return false, nil
+	return sudoku.IsCompleteAndValid(), nil
 }
 
 func debugPrintPossibleValues(valuesPtr *[][]*map[int]bool) {
@@ -72,6 +88,7 @@ func debugPrintPossibleValues(valuesPtr *[][]*map[int]bool) {
 // The patterns are used to be applied on a Sudoku in order to solve it.
 func initPatterns() []pattern.Pattern {
 	return []pattern.Pattern{
-		&pattern.Trivial{},
+		&pattern.NakedSingle{},
+		&pattern.HiddenSingle{},
 	}[:]
 }

@@ -215,3 +215,86 @@ func TestSudoku_IsValid(t *testing.T) {
 		t.Errorf("The Sudoku\n%s\nis invalid but claims to be valid", sudoku.String())
 	}
 }
+
+func TestSudoku_IsComplete(t *testing.T) {
+	sudoku, _ := LoadSudoku(&[9][9]int{
+		{1, 2, 3, 4, 5, 4, 3, 2, 1},
+		{2, 3, 4, 5, 6, 5, 4, 3, 2},
+		{3, 4, 5, 6, 7, 6, 5, 4, 3},
+		{4, 5, 6, 7, 8, 7, 6, 5, 4},
+		{5, 6, 7, 8, 0, 8, 7, 6, 5},
+		{4, 5, 6, 7, 8, 7, 6, 5, 4},
+		{3, 4, 5, 6, 7, 6, 5, 4, 3},
+		{2, 3, 4, 5, 6, 5, 4, 3, 2},
+		{1, 2, 3, 4, 5, 4, 3, 2, 1},
+	})
+
+	if sudoku.IsComplete() {
+		t.Errorf("Expected Sudoku to not be complete")
+	}
+
+	sudoku, _ = LoadSudoku(&[9][9]int{
+		{1, 2, 3, 4, 5, 4, 3, 2, 1},
+		{2, 3, 4, 5, 6, 5, 4, 3, 2},
+		{3, 4, 5, 6, 7, 6, 5, 4, 3},
+		{4, 5, 6, 7, 8, 7, 6, 5, 4},
+		{5, 6, 7, 8, 9, 8, 7, 6, 5},
+		{4, 5, 6, 7, 8, 7, 6, 5, 4},
+		{3, 4, 5, 6, 7, 6, 5, 4, 3},
+		{2, 3, 4, 5, 6, 5, 4, 3, 2},
+		{1, 2, 3, 4, 5, 4, 3, 2, 1},
+	})
+
+	if !sudoku.IsComplete() {
+		t.Errorf("Expected Sudoku to be complete")
+	}
+}
+func TestSudoku_IsCompleteAndValid(t *testing.T) {
+	sudoku, _ := LoadSudoku(&[9][9]int{
+		{9, 1, 2, 8, 4, 6, 5, 7, 3},
+		{6, 8, 3, 5, 7, 1, 2, 9, 4},
+		{4, 5, 7, 3, 2, 9, 1, 6, 8},
+		{8, 2, 9, 6, 1, 3, 4, 5, 7},
+		{1, 6, 4, 9, 5, 7, 8, 3, 2},
+		{3, 7, 5, 2, 8, 4, 6, 1, 9},
+		{7, 4, 6, 1, 9, 2, 3, 8, 5},
+		{5, 9, 1, 4, 3, 8, 7, 2, 6},
+		{2, 3, 8, 7, 6, 5, 9, 4, 1},
+	})
+
+	if !sudoku.IsCompleteAndValid() {
+		t.Errorf("Expected Sudoku to be complete AND valid")
+	}
+
+	sudoku, _ = LoadSudoku(&[9][9]int{
+		{0, 1, 2, 8, 4, 6, 5, 7, 3},
+		{6, 8, 3, 5, 7, 1, 2, 9, 4},
+		{4, 5, 7, 3, 2, 9, 1, 6, 8},
+		{8, 2, 9, 6, 1, 3, 4, 5, 7},
+		{1, 6, 4, 9, 5, 7, 8, 3, 2},
+		{3, 7, 5, 2, 8, 4, 6, 1, 9},
+		{7, 4, 6, 1, 9, 2, 3, 8, 5},
+		{5, 9, 1, 4, 3, 8, 7, 2, 6},
+		{2, 3, 8, 7, 6, 5, 9, 4, 1},
+	})
+
+	if sudoku.IsCompleteAndValid() {
+		t.Errorf("Expected Sudoku to be valid, but not complete")
+	}
+
+	sudoku, _ = LoadSudoku(&[9][9]int{
+		{9, 9, 2, 8, 4, 6, 5, 7, 3},
+		{6, 8, 3, 5, 7, 1, 2, 9, 4},
+		{4, 5, 7, 3, 2, 9, 1, 6, 8},
+		{8, 2, 9, 6, 1, 3, 4, 5, 7},
+		{1, 6, 4, 9, 5, 7, 8, 3, 2},
+		{3, 7, 5, 2, 8, 4, 6, 1, 9},
+		{7, 4, 6, 1, 9, 2, 3, 8, 5},
+		{5, 9, 1, 4, 3, 8, 7, 2, 6},
+		{2, 3, 8, 7, 6, 5, 9, 4, 1},
+	})
+
+	if sudoku.IsCompleteAndValid() {
+		t.Errorf("Expected Sudoku to be complete, but not valid")
+	}
+}

@@ -106,5 +106,5 @@ func (s *Solver) solve(sudoku *model.Sudoku,
 		}
 	}
 
-	return sudoku.IsValid()
+	return sudoku.IsCompleteAndValid()
 }

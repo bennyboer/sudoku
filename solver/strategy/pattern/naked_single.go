@@ -4,16 +4,16 @@ import (
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 )
 
-// Implementation of the trivial pattern.
+// Implementation of the naked single pattern.
 // It will just look into the possible values and fill all values which are trivially missing,
 // meaning:
 // - If only one value is missing in a ROW
 // - If only one value is missing in a COLUMN
 // - If only one value is missing in a BLOCK
-type Trivial struct{}
+type NakedSingle struct{}
 
 // Apply pattern on Sudoku.
-func (p *Trivial) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool) (changed bool) {
+func (p *NakedSingle) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool) (changed bool) {
 	changed = false
 	pv := *possibleValuesRef
 

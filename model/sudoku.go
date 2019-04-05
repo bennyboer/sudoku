@@ -103,6 +103,37 @@ func (s *Sudoku) IsValid() bool {
 	return true
 }
 
+// Check whether the Sudoku is completely filled.
+// This does NOT mean that it is valid!
+func (s *Sudoku) IsComplete() bool {
+	for row := 0; row < SudokuSize; row++ {
+		for column := 0; column < SudokuSize; column++ {
+			cell := s.Cells[row][column]
+
+			if cell.IsEmpty() {
+				return false
+			}
+		}
+	}
+
+	return true;
+}
+
+// Check whether the Sudoku is completely filled AND valid.
+func (s *Sudoku) IsCompleteAndValid() bool {
+	for row := 0; row < SudokuSize; row++ {
+		for column := 0; column < SudokuSize; column++ {
+			cell := s.Cells[row][column]
+
+			if cell.IsEmpty() || cell.HasCollision() {
+				return false
+			}
+		}
+	}
+
+	return true;
+}
+
 // Get a String representation of the Sudoku.
 func (s *Sudoku) String() string {
 	var sb strings.Builder
