@@ -23,7 +23,7 @@ func (p *NakedPair) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]
 			}
 		}
 
-		didChange := p.findAndUpdatedNakedPairs(possibleRowValues)
+		didChange := p.findAndUpdateNakedPairs(possibleRowValues)
 		changed = changed || didChange
 	}
 
@@ -37,7 +37,7 @@ func (p *NakedPair) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]
 			}
 		}
 
-		didChange := p.findAndUpdatedNakedPairs(possibleColumnValues)
+		didChange := p.findAndUpdateNakedPairs(possibleColumnValues)
 		changed = changed || didChange
 	}
 
@@ -55,7 +55,7 @@ func (p *NakedPair) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]
 			}
 		}
 
-		didChange := p.findAndUpdatedNakedPairs(possibleBlockValues)
+		didChange := p.findAndUpdateNakedPairs(possibleBlockValues)
 		changed = changed || didChange
 	}
 
@@ -63,13 +63,13 @@ func (p *NakedPair) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]
 }
 
 // Check for a naked pair in the passed slice and process the changes in the Sudoku and possible value lookup.
-func (p *NakedPair) findAndUpdatedNakedPairs(slice []*map[int]bool) bool {
+func (p *NakedPair) findAndUpdateNakedPairs(slice []*map[int]bool) bool {
 	// First and foremost find all pair possibilities (Only two possible values for a cell).
 	pairPossibilities := make([]*[]int, 0, model.SudokuSize)
 	pairPossibilitiesLookups := make([]*map[int]bool, 0, model.SudokuSize)
 
 	for _, pvLookup := range slice {
-		pair := make([]int, 2)
+		pair := make([]int, 0, 2)
 		index := 0
 		add := true
 		for value, possible := range *pvLookup {
@@ -79,12 +79,12 @@ func (p *NakedPair) findAndUpdatedNakedPairs(slice []*map[int]bool) bool {
 					break
 				}
 
-				pair[index] = value
+				pair = append(pair, value)
 				index++
 			}
 		}
 
-		if add {
+		if add && len(pair) == 2 {
 			sort.Ints(pair) // Sort in order to compare it later easily
 			pairPossibilities = append(pairPossibilities, &pair)
 			pairPossibilitiesLookups = append(pairPossibilitiesLookups, pvLookup)

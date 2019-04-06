@@ -20,6 +20,7 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 	beforeS := fmt.Sprintf("%v", sudoku)             // TODO Remove
 	debugPrintPossibleValues(possibleValueLookupRef) // TODO Remove
 
+	iteration := 1
 	for patternIndex := 0; patternIndex < len(patterns); {
 		currentPattern := patterns[patternIndex]
 
@@ -28,8 +29,8 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 		for changed {
 			changed = currentPattern.Apply(sudoku, possibleValueLookupRef)
 
-			debugPrintPossibleValues(possibleValueLookupRef) // TODO Remove
-			fmt.Println("-----")                             // TODO Remove
+			// debugPrintPossibleValues(possibleValueLookupRef)                          // TODO Remove
+			fmt.Printf("\nITERATION %d WITH PATTERN %d -----\n", iteration, patternIndex) // TODO Remove
 
 			if changed {
 				changedAtLeastOnce = true
@@ -43,6 +44,8 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 		} else {
 			patternIndex++
 		}
+
+		iteration++
 	}
 
 	afterS := fmt.Sprintf("%v", sudoku) // TODO Remove
