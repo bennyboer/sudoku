@@ -20,7 +20,7 @@ func (p *HiddenSingle) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[i
 	return
 }
 
-// Check for a hidden singles in the passed slice or possible values
+// Check for a hidden singles in the passed slice of possible values
 // and process the changes in the possible value lookup.
 func (p *HiddenSingle) findAndUpdateHiddenSingles(slice []*map[int]bool) bool {
 	changed := false

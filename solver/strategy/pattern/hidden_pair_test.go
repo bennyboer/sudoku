@@ -31,7 +31,14 @@ func TestHiddenPair_Apply(t *testing.T) {
 	possibleValues := *(*possibleValueLookupRef)[3][4]
 	for value, possible := range possibleValues {
 		if (value == 1 || value == 3) && possible {
-			t.Errorf("Expected cell at row 4 and column 5 to not have 1 and 3 as possible values")
+			t.Errorf("Expected cell at row 4 and column 5 to not have 1 or 3 as possible values")
+		}
+	}
+
+	possibleValues = *(*possibleValueLookupRef)[3][5]
+	for value, possible := range possibleValues {
+		if (value == 1 || value == 2 || value == 3 || value == 7) && possible {
+			t.Errorf("Expected cell at row 4 and column 6 to not have 1, 2, 3 or 7 as possible values")
 		}
 	}
 }
