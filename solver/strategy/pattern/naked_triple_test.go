@@ -7,7 +7,7 @@ import (
 )
 
 func TestNakedTriple_Apply(t *testing.T) {
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{0, 7, 0, 0, 0, 0, 8, 0, 0},
 		{0, 2, 0, 8, 0, 0, 9, 5, 0},
 		{0, 0, 0, 0, 0, 9, 6, 0, 2},

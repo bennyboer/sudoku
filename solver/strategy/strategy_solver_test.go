@@ -6,7 +6,7 @@ import (
 )
 
 func TestSolver_SolveSimple(t *testing.T) {
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{6, 7, 9, 1, 0, 4, 3, 5, 2},
 		{0, 4, 0, 6, 3, 7, 0, 8, 1},
 		{3, 1, 0, 9, 2, 0, 4, 6, 0},
@@ -32,7 +32,7 @@ func TestSolver_SolveSimple(t *testing.T) {
 }
 
 func TestSolver_SolveAdvanced(t *testing.T) {
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{4, 0, 0, 0, 7, 0, 6, 0, 0},
 		{0, 7, 0, 2, 0, 4, 3, 0, 0},
@@ -58,7 +58,7 @@ func TestSolver_SolveAdvanced(t *testing.T) {
 }
 
 func TestSolver_SolveComplicated(t *testing.T) {
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{2, 6, 0, 0, 0, 0, 0, 0, 0},
 		{1, 0, 0, 8, 0, 0, 0, 0, 0},
 		{0, 0, 0, 9, 6, 2, 0, 0, 0},

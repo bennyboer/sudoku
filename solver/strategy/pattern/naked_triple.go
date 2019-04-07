@@ -2,7 +2,6 @@ package pattern
 
 import (
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
-	"sort"
 )
 
 // Implementation of the naked triple pattern.
@@ -21,62 +20,32 @@ func (p *NakedTriple) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[in
 
 // Check for a naked triple in the passed slice and process the changes in the possible value lookup.
 func (p *NakedTriple) findAndUpdateNakedTriples(slice []*map[int]bool) bool {
-	// First and foremost find all pair possibilities (Only two possible values for a cell).
-	pairPossibilities := make([]*[]int, 0, model.SudokuSize)
-	pairPossibilitiesLookups := make(map[*map[int]bool]bool)
-
-	for _, pvLookup := range slice {
-		pair := make([]int, 0, 2)
-		index := 0
-		add := true
-		for value, possible := range *pvLookup {
-			if possible {
-				if index == 2 {
-					add = false
-					break
-				}
-
-				pair = append(pair, value)
-				index++
-			}
-		}
-
-		if add && len(pair) == 2 {
-			sort.Ints(pair) // Sort in order to compare it later easily
-			pairPossibilities = append(pairPossibilities, &pair)
-			pairPossibilitiesLookups[pvLookup] = true
-		}
+	if len(slice) <= 3 {
+		return false // We need at least 4 cells, otherwise this wont do anything
 	}
 
-	if len(pairPossibilities) != 3 {
+	lookups, values := p.findThreeMatchingLookups(slice)
+
+	if lookups == nil || values == nil {
 		return false
 	}
 
-	// Check that the 3 pairs include only 3 unique values
-	valuesSet := make(map[int]bool)
-	for _, pairPtr := range pairPossibilities {
-		pair := *pairPtr
-
-		for _, value := range pair {
-			valuesSet[value] = true
-		}
-	}
-
-	if len(valuesSet) != 3 {
-		return false
+	takenLookups := make(map[*map[int]bool]bool)
+	for _, lookupPtr := range lookups {
+		takenLookups[lookupPtr] = true
 	}
 
 	// Now we found a naked triple!
 	// -> Eliminate the three unique values from all other lookups in the same unit (Row, column or block)
 	changed := false
 	for _, lookupPtr := range slice {
-		_, ok := pairPossibilitiesLookups[lookupPtr]
+		_, ok := takenLookups[lookupPtr]
 
-		// Check that lookup ptr is none of the cells with a pair
+		// Check that lookup ptr is none of the cells with a triple
 		if !ok {
 			lookup := *lookupPtr
 
-			for value, _ := range valuesSet {
+			for _, value := range values {
 				if possible, _ := lookup[value]; possible {
 					lookup[value] = false
 					changed = true
@@ -86,4 +55,55 @@ func (p *NakedTriple) findAndUpdateNakedTriples(slice []*map[int]bool) bool {
 	}
 
 	return changed
+}
+
+// Check if there are three lookups among the passed with no more than 3 unique values.
+// Will return the three lookups and the three unique values, or nil if there are none matching lookups.
+func (p *NakedTriple) findThreeMatchingLookups(lookups []*map[int]bool) ([]*map[int]bool, []int) {
+	length := len(lookups)
+
+	for a := 0; a < length; a++ {
+		for b := a + 1; b < length; b++ {
+			for c := b + 1; c < length; c++ {
+				if values := p.findValues(3, lookups[a], lookups[b], lookups[c]); values != nil {
+					return []*map[int]bool{
+						lookups[a],
+						lookups[b],
+						lookups[c],
+					}[:], values
+				}
+			}
+		}
+	}
+
+	return nil, nil
+}
+
+// Find a count of values in the passed lookups.
+// The lookups are not allowed to have more than the passed count of values (in sum!).
+// Will return the values or nil if the lookups have in sum more than the passed count of values.
+func (p *NakedTriple) findValues(count int, lookups ...*map[int]bool) []int {
+	valuesSet := make(map[int]bool)
+
+	for _, lookupPtr := range lookups {
+		lookup := *lookupPtr
+
+		for value, possible := range lookup {
+			if possible {
+				valuesSet[value] = true
+			}
+		}
+	}
+
+	if len(valuesSet) <= count {
+		values := make([]int, 0, len(valuesSet))
+
+		for value, _ := range valuesSet {
+			values = append(values, value)
+		}
+
+		return values
+	}
+
+	return nil
 }

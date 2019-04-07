@@ -1,6 +1,8 @@
 package pattern
 
-import "github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
+import (
+	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
+)
 
 // Helper function to update a value in the passed Sudoku as well in the possible values lookup matrix.
 func updateValueInSudokuAndLookup(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool, row int, column int, value int) {
@@ -12,7 +14,7 @@ func updateValueInSudokuAndLookup(sudoku *model.Sudoku, possibleValuesRef *[][]*
 
 	// Update possible value lookup
 	if pv[row][column] != nil {
-		(*pv[row][column])[value] = false
+		pv[row][column] = nil
 	}
 
 	// Update neighbour lookups

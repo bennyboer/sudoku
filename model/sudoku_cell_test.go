@@ -118,7 +118,7 @@ func TestSudokuCell_SetValue_ValueAlreadySet(t *testing.T) {
 
 func TestSudokuCell_SetValue_NeighbourNotification(t *testing.T) {
 	// We need to initialize a complete Sudoku first for SetValue to work properly.
-	sudoku, e := LoadSudoku(&[9][9]int{
+	sudoku, e := LoadSudoku(&[][]int{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 1, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -180,7 +180,7 @@ func TestSudokuCell_IsEmpty(t *testing.T) {
 }
 
 func TestSudokuCell_HasCollision(t *testing.T) {
-	sudoku, _ := LoadSudoku(&[9][9]int{
+	sudoku, _ := LoadSudoku(&[][]int{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 1, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -209,7 +209,7 @@ func TestSudokuCell_HasCollision(t *testing.T) {
 }
 
 func TestSudokuCell_PossibleValues(t *testing.T) {
-	sudoku, _ := LoadSudoku(&[9][9]int{
+	sudoku, _ := LoadSudoku(&[][]int{
 		{0, 1, 2, 3, 4, 5, 6, 7, 8},
 		{0, 0, 0, 0, 1, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -249,7 +249,7 @@ func TestSudokuCell_PossibleValues(t *testing.T) {
 }
 
 func TestSudokuCell_Neighbours(t *testing.T) {
-	sudoku, _ := LoadSudoku(&[9][9]int{
+	sudoku, _ := LoadSudoku(&[][]int{
 		{0, 1, 2, 3, 4, 5, 6, 7, 8},
 		{0, 0, 0, 0, 1, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},

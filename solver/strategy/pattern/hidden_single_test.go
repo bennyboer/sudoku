@@ -7,7 +7,7 @@ import (
 )
 
 func TestHiddenSingle_Apply_WithChanges(t *testing.T) {
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{2, 6, 0, 0, 0, 0, 0, 0, 0},
 		{1, 0, 0, 8, 0, 0, 0, 0, 0},
 		{0, 0, 0, 9, 6, 2, 0, 0, 0},
@@ -38,7 +38,7 @@ func TestHiddenSingle_Apply_WithChanges(t *testing.T) {
 }
 
 func TestHiddenSingle_Apply_WithoutChanges(t *testing.T) {
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},

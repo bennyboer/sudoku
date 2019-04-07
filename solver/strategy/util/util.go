@@ -1,6 +1,10 @@
 package util
 
-import "github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
+import (
+	"fmt"
+	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
+	"sort"
+)
 
 // Prepare a lookup of possible values per Sudoku cell.
 // It will return a two-dimensional matrix with lookup tables where for each value either true or false is given.
@@ -45,4 +49,36 @@ func PreparePossibleValueLookup(sudoku *model.Sudoku) *[][]*map[int]bool {
 	}
 
 	return &matrix
+}
+
+// TODO Remove if no more needed!
+func DebugPrintPossibleValues(valuesPtr *[][]*map[int]bool) {
+	matrix := *valuesPtr
+
+	for row := 0; row < 9; row++ {
+		for column := 0; column < 9; column++ {
+			fmt.Printf("[row: %d, column: %d] | ", row, column)
+
+			if matrix[row][column] != nil {
+				lookup := *matrix[row][column]
+
+				possibleValues := make([]int, 0, 9)
+				for value, possible := range lookup {
+					if possible {
+						possibleValues = append(possibleValues, value)
+					}
+				}
+
+				sort.Ints(possibleValues)
+
+				if len(possibleValues) > 0 {
+					fmt.Printf("%v\n", possibleValues)
+				} else {
+					fmt.Printf("FILLED\n")
+				}
+			} else {
+				fmt.Printf("FILLED\n")
+			}
+		}
+	}
 }

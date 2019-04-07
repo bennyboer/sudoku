@@ -7,7 +7,7 @@ import (
 )
 
 func TestNakedPair_Apply_WithChanges(t *testing.T) {
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{0, 0, 0, 1, 3, 7, 0, 0, 0},
 		{7, 0, 0, 5, 9, 6, 1, 3, 0},
 		{0, 0, 9, 0, 8, 0, 0, 6, 0},

@@ -28,7 +28,7 @@ func main() {
 	//	fmt.Println("Sudoku has no unique solution")
 	//}
 
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{0, 0, 5, 3, 0, 0, 0, 0, 0},
 		{8, 0, 0, 0, 0, 0, 0, 2, 0},
 		{0, 7, 0, 0, 1, 0, 5, 0, 0},

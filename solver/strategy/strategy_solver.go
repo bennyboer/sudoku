@@ -5,7 +5,6 @@ import (
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/strategy/pattern"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/strategy/util"
-	"sort"
 )
 
 // Strategy solver using the Sudoku solving patterns in order
@@ -18,7 +17,6 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 	possibleValueLookupRef := util.PreparePossibleValueLookup(sudoku)
 
 	beforeS := fmt.Sprintf("%v", sudoku) // TODO Remove
-	//debugPrintPossibleValues(possibleValueLookupRef) // TODO Remove
 
 	iteration := 1
 	for patternIndex := 0; patternIndex < len(patterns); {
@@ -49,37 +47,6 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 	fmt.Printf("After:\n%s\n\n", afterS)   // TODO Remove
 
 	return sudoku.IsCompleteAndValid(), nil
-}
-
-func debugPrintPossibleValues(valuesPtr *[][]*map[int]bool) {
-	matrix := *valuesPtr
-
-	for row := 0; row < 9; row++ {
-		for column := 0; column < 9; column++ {
-			fmt.Printf("[row: %d, column: %d] | ", row, column)
-
-			if matrix[row][column] != nil {
-				lookup := *matrix[row][column]
-
-				possibleValues := make([]int, 0, 9)
-				for value, possible := range lookup {
-					if possible {
-						possibleValues = append(possibleValues, value)
-					}
-				}
-
-				sort.Ints(possibleValues)
-
-				if len(possibleValues) > 0 {
-					fmt.Printf("%v\n", possibleValues)
-				} else {
-					fmt.Printf("FILLED\n")
-				}
-			} else {
-				fmt.Printf("FILLED\n")
-			}
-		}
-	}
 }
 
 // Initialize the patterns slice.

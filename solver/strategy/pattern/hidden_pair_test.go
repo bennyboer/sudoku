@@ -7,7 +7,7 @@ import (
 )
 
 func TestHiddenPair_Apply(t *testing.T) {
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{4, 0, 0, 0, 7, 0, 6, 0, 0},
 		{0, 7, 0, 2, 0, 4, 3, 0, 0},

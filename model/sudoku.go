@@ -26,7 +26,7 @@ func EmptySudoku() *Sudoku {
 }
 
 // Load a Sudoku with the passed values.
-func LoadSudoku(values *[9][9]int) (*Sudoku, error) {
+func LoadSudoku(values *[][]int) (*Sudoku, error) {
 	// Validate input first
 	if values == nil {
 		return nil, fmt.Errorf("cannot load Sudoku from no nil pointer")
@@ -59,7 +59,7 @@ func (s *Sudoku) SaveSudoku() *[][]int {
 }
 
 // Generate Sudoku cells filled with the passed values or if nil is given empty cells.
-func createCells(values *[9][9]int) *[][]*SudokuCell {
+func createCells(values *[][]int) *[][]*SudokuCell {
 	cells := make([][]*SudokuCell, SudokuSize)
 
 	for row := 0; row < SudokuSize; row++ {
@@ -69,7 +69,7 @@ func createCells(values *[9][9]int) *[][]*SudokuCell {
 			value := 0
 
 			if values != nil {
-				value = values[row][column]
+				value = (*values)[row][column]
 			}
 
 			newCell, _ := NewSudokuCell(row, column, value)
