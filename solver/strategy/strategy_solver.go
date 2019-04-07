@@ -17,7 +17,7 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 	patterns := initPatterns()
 	possibleValueLookupRef := util.PreparePossibleValueLookup(sudoku)
 
-	beforeS := fmt.Sprintf("%v", sudoku)             // TODO Remove
+	beforeS := fmt.Sprintf("%v", sudoku) // TODO Remove
 	//debugPrintPossibleValues(possibleValueLookupRef) // TODO Remove
 
 	iteration := 1
@@ -90,5 +90,6 @@ func initPatterns() []pattern.Pattern {
 		&pattern.HiddenSingle{},
 		&pattern.NakedPair{},
 		&pattern.HiddenPair{},
+		&pattern.NakedTriple{},
 	}[:]
 }
