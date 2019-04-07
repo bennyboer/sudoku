@@ -28,8 +28,12 @@ func TestHiddenSingle_Apply_WithChanges(t *testing.T) {
 		t.Errorf("Expected pattern to change something")
 	}
 
-	if sudoku.Cells[6][8].Value() != 7 {
-		t.Errorf("Expected pattern to apply value 7 to the cell at row 7 and column 9")
+	pv := *possibleValueLookupRef
+	possibleValues := *pv[6][8]
+	for value, possible := range possibleValues {
+		if possible && value != 7 {
+			t.Errorf("Only value 7 should be possible in cell in row 7 and column 9")
+		}
 	}
 }
 

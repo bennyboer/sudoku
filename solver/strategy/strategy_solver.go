@@ -18,26 +18,21 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 	possibleValueLookupRef := util.PreparePossibleValueLookup(sudoku)
 
 	beforeS := fmt.Sprintf("%v", sudoku)             // TODO Remove
-	debugPrintPossibleValues(possibleValueLookupRef) // TODO Remove
+	//debugPrintPossibleValues(possibleValueLookupRef) // TODO Remove
 
 	iteration := 1
 	for patternIndex := 0; patternIndex < len(patterns); {
 		currentPattern := patterns[patternIndex]
 
-		changedAtLeastOnce := false // Whether the current pattern changed something at least in one iteration
-		changed := true
-		for changed {
-			changed = currentPattern.Apply(sudoku, possibleValueLookupRef)
+		changed := currentPattern.Apply(sudoku, possibleValueLookupRef)
 
-			// debugPrintPossibleValues(possibleValueLookupRef)                          // TODO Remove
-			fmt.Printf("\nITERATION %d WITH PATTERN %d -----\n", iteration, patternIndex) // TODO Remove
+		fmt.Printf("\nITERATION %d WITH PATTERN %d -----\n", iteration, patternIndex) // TODO Remove
 
-			if changed {
-				changedAtLeastOnce = true
-			}
+		if sudoku.IsCompleteAndValid() {
+			return true, nil // Early exit because the solver finished its job
 		}
 
-		if changedAtLeastOnce {
+		if changed {
 			// Go back to the first pattern, since the Sudoku has been changed by the current pattern.
 			// New opportunities may have risen.
 			patternIndex = 0
@@ -94,5 +89,6 @@ func initPatterns() []pattern.Pattern {
 		&pattern.NakedSingle{},
 		&pattern.HiddenSingle{},
 		&pattern.NakedPair{},
+		&pattern.HiddenPair{},
 	}[:]
 }

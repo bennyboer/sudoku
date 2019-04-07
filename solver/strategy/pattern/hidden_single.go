@@ -5,52 +5,57 @@ import (
 )
 
 // Implementation of the hidden single pattern.
-// It searches for each block for values which can only be applied to one single field!
+// It searches each row, column and block for values which can only be applied to one single field!
 type HiddenSingle struct{}
 
 // Apply pattern on Sudoku.
-// Search block by block values which can only be applied to one single cell.
+// Search all rows, columns and blocks for values which can only be applied to one single cell.
 func (p *HiddenSingle) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool) (changed bool) {
 	changed = false
-	pv := *possibleValuesRef
 
-	for block := 0; block < model.SudokuSize; block++ {
-		startRow := block / model.BlockSize * model.BlockSize
-		startColumn := (block * model.BlockSize) % model.SudokuSize
-		for value := 1; value < model.SudokuSize; value++ {
-			isValueUnique := false
-			var uniqueRow int
-			var uniqueColumn int
+	forEachUnit(func(unit []*map[int]bool) {
+		changed = p.findAndUpdateHiddenSingles(unit) || changed
+	}, possibleValuesRef)
 
-			// Check if value is unique in block
-		Outer:
-			for row := startRow; row < startRow+model.BlockSize; row++ {
-				for column := startColumn; column < startColumn+model.BlockSize; column++ {
-					if pv[row][column] != nil {
-						possible, ok := (*pv[row][column])[value]
+	return
+}
 
-						if ok && possible {
-							if isValueUnique {
-								isValueUnique = false
-								break Outer // Value occurs more than once -> No need to continue
-							} else {
-								isValueUnique = true
-								uniqueRow = row
-								uniqueColumn = column
-							}
-						}
-					}
+// Check for a hidden singles in the passed slice or possible values
+// and process the changes in the possible value lookup.
+func (p *HiddenSingle) findAndUpdateHiddenSingles(slice []*map[int]bool) bool {
+	changed := false
+
+	for value := 1; value <= model.SudokuSize; value++ {
+		var uniqueLookupPtr *map[int]bool = nil
+
+		// Check if value is unique in unit slice
+		for _, lookupPtr := range slice {
+			lookup := *lookupPtr
+
+			if possible, ok := lookup[value]; ok && possible {
+				if uniqueLookupPtr != nil {
+					uniqueLookupPtr = nil
+					break // Value occurs more than once -> No need to continue
+				}
+
+				uniqueLookupPtr = lookupPtr
+			}
+		}
+
+		if uniqueLookupPtr != nil {
+			// Value occurs exclusively in the uniqueLookup.
+			// Mark all other values of the lookup as impossible.
+			uniqueLookup := *uniqueLookupPtr
+
+			for v, _ := range uniqueLookup {
+				if v != value {
+					uniqueLookup[v] = false
 				}
 			}
 
-			if isValueUnique {
-				// Value is unique in block! Fill the cell!
-				updateValueInSudokuAndLookup(sudoku, possibleValuesRef, uniqueRow, uniqueColumn, value)
-
-				changed = true
-			}
+			changed = true
 		}
 	}
 
-	return
+	return changed
 }

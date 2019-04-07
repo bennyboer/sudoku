@@ -11,53 +11,10 @@ type NakedPair struct{}
 // Apply pattern on Sudoku.
 func (p *NakedPair) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool) (changed bool) {
 	changed = false
-	pv := *possibleValuesRef
 
-	// Search rows
-	for row := 0; row < model.SudokuSize; row++ {
-		possibleRowValues := make([]*map[int]bool, 0, model.SudokuSize)
-
-		for column := 0; column < model.SudokuSize; column++ {
-			if pv[row][column] != nil {
-				possibleRowValues = append(possibleRowValues, pv[row][column])
-			}
-		}
-
-		didChange := p.findAndUpdateNakedPairs(possibleRowValues)
-		changed = changed || didChange
-	}
-
-	// Search columns
-	for column := 0; column < model.SudokuSize; column++ {
-		possibleColumnValues := make([]*map[int]bool, 0, model.SudokuSize)
-
-		for row := 0; row < model.SudokuSize; row++ {
-			if pv[row][column] != nil {
-				possibleColumnValues = append(possibleColumnValues, pv[row][column])
-			}
-		}
-
-		didChange := p.findAndUpdateNakedPairs(possibleColumnValues)
-		changed = changed || didChange
-	}
-
-	// Search blocks
-	for block := 0; block < model.SudokuSize; block++ {
-		possibleBlockValues := make([]*map[int]bool, 0, model.SudokuSize)
-
-		startRow := block / model.BlockSize * model.BlockSize
-		startColumn := (block * model.BlockSize) % model.SudokuSize
-		for row := startRow; row < startRow+model.BlockSize; row++ {
-			for column := startColumn; column < startColumn+model.BlockSize; column++ {
-				if pv[row][column] != nil {
-					possibleBlockValues = append(possibleBlockValues, pv[row][column])
-				}
-			}
-		}
-
-		didChange := p.findAndUpdateNakedPairs(possibleBlockValues)
-		changed = changed || didChange
-	}
+	forEachUnit(func(unit []*map[int]bool) {
+		changed = p.findAndUpdateNakedPairs(unit) || changed
+	}, possibleValuesRef)
 
 	return
 }
