@@ -65,7 +65,7 @@ func (p *NakedTriple) findThreeMatchingLookups(lookups []*map[int]bool) ([]*map[
 	for a := 0; a < length; a++ {
 		for b := a + 1; b < length; b++ {
 			for c := b + 1; c < length; c++ {
-				if values := p.findValues(3, lookups[a], lookups[b], lookups[c]); values != nil {
+				if values := findNakedValues(3, lookups[a], lookups[b], lookups[c]); values != nil {
 					return []*map[int]bool{
 						lookups[a],
 						lookups[b],
@@ -77,33 +77,4 @@ func (p *NakedTriple) findThreeMatchingLookups(lookups []*map[int]bool) ([]*map[
 	}
 
 	return nil, nil
-}
-
-// Find a count of values in the passed lookups.
-// The lookups are not allowed to have more than the passed count of values (in sum!).
-// Will return the values or nil if the lookups have in sum more than the passed count of values.
-func (p *NakedTriple) findValues(count int, lookups ...*map[int]bool) []int {
-	valuesSet := make(map[int]bool)
-
-	for _, lookupPtr := range lookups {
-		lookup := *lookupPtr
-
-		for value, possible := range lookup {
-			if possible {
-				valuesSet[value] = true
-			}
-		}
-	}
-
-	if len(valuesSet) <= count {
-		values := make([]int, 0, len(valuesSet))
-
-		for value, _ := range valuesSet {
-			values = append(values, value)
-		}
-
-		return values
-	}
-
-	return nil
 }

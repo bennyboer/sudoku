@@ -98,3 +98,118 @@ func getColumnPossibleValues(column int, possibleValuesRef *[][]*map[int]bool) [
 
 	return possibleColumnValues
 }
+
+// Count the possible values in the passed possible value lookup.
+func countPossibleValues(lookup *map[int]bool) int {
+	result := 0
+
+	if lookup != nil {
+		for _, possible := range *lookup {
+			if possible {
+				result++
+			}
+		}
+	}
+
+	return result
+}
+
+// Count the occurrences of all values in the passed possible value lookups.
+func countValueOccurrences(lookups []*map[int]bool) *map[int]int {
+	occurrences := make(map[int]int)
+
+	for _, lookupPtr := range lookups {
+		if lookupPtr != nil {
+			lookup := *lookupPtr
+
+			for value, possible := range lookup {
+				if possible {
+					count, ok := occurrences[value]
+
+					if ok {
+						occurrences[value] = count + 1
+					} else {
+						occurrences[value] = 1
+					}
+				}
+			}
+		}
+	}
+
+	return &occurrences
+}
+
+// Find naked N (count) values in the passed possible value lookups or nil if none are found.
+func findNakedValues(count int, lookups ...*map[int]bool) []int {
+	valuesSet := make(map[int]bool)
+
+	for _, lookupPtr := range lookups {
+		lookup := *lookupPtr
+
+		for value, possible := range lookup {
+			if possible {
+				valuesSet[value] = true
+			}
+		}
+	}
+
+	if len(valuesSet) <= count {
+		values := make([]int, 0, len(valuesSet))
+
+		for value, _ := range valuesSet {
+			values = append(values, value)
+		}
+
+		return values
+	}
+
+	return nil
+}
+
+// Return all hidden values (count) of the passed lookups or if none, then nil.
+func findHiddenNValues(count int, lookups []*map[int]bool, otherLookups []*map[int]bool) []int {
+	// We need at least one lookup with more than [count] values,
+	// otherwise the algorithm won't have anything to reduce afterwards which would
+	// not make any sense.
+	maxCount := 0
+	for _, lookupPtr := range lookups {
+		if c := countPossibleValues(lookupPtr); c > maxCount {
+			maxCount = c
+		}
+	}
+
+	// Check if at least [count]+1 values in a lookup.
+	if count >= maxCount {
+		return nil
+	}
+
+	// Check values in common of lookups
+	occurrences1 := countValueOccurrences(lookups)
+	occurrences2 := countValueOccurrences(otherLookups)
+
+	// Values of occurrences2 mustn't occur in occurrences1 -> Subtract
+	occurrences := make(map[int]int)
+	for value := 1; value <= model.SudokuSize; value++ {
+		c1, hasValue1 := (*occurrences1)[value]
+		c2, hasValue2 := (*occurrences2)[value]
+
+		if hasValue1 && !hasValue2 {
+			c := c1 - c2
+			if c > 0 {
+				occurrences[value] = c
+			}
+		}
+	}
+
+	if len(occurrences) == count {
+		// Success! Collect values and return.
+		values := make([]int, 0, count)
+		for value, _ := range occurrences {
+			values = append(values, value)
+		}
+
+		return values
+	}
+
+	return nil
+}
