@@ -41,6 +41,8 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 		iteration++
 	}
 
+	util.DebugPrintPossibleValues(possibleValueLookupRef)
+
 	afterS := fmt.Sprintf("%v", sudoku) // TODO Remove
 
 	fmt.Printf("Before:\n%s\n\n", beforeS) // TODO Remove
@@ -62,5 +64,6 @@ func initPatterns() []pattern.Pattern {
 		&pattern.NakedQuadruple{},
 		&pattern.HiddenQuadruple{},
 		&pattern.RowBlockCheck{},
+		&pattern.BlockRowCheck{},
 	}[:]
 }

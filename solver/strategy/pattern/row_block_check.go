@@ -9,6 +9,8 @@ type RowBlockCheck struct{}
 
 // Apply pattern on Sudoku.
 func (p *RowBlockCheck) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool) (changed bool) {
+	changed = false
+
 	// For each row
 	for row := 0; row < model.SudokuSize; row++ {
 		possibleRowValues := getRowPossibleValues(row, possibleValuesRef, true)
@@ -20,13 +22,30 @@ func (p *RowBlockCheck) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[
 			possibleBlockValues := getBlockPossibleValues(block+startBlock, possibleValuesRef, true)
 			rowLookupsInBlock := possibleRowValues[block*model.BlockSize : block*model.BlockSize+model.BlockSize]
 
-			if changed := p.findPatternAndUpdate(rowValueOccurrences, possibleRowValues, possibleBlockValues, rowLookupsInBlock); changed {
-				return true
+			if didChange := p.findPatternAndUpdate(rowValueOccurrences, possibleRowValues, possibleBlockValues, rowLookupsInBlock); didChange {
+				changed = true
 			}
 		}
 	}
 
-	return false
+	// For each column
+	for column := 0; column < model.SudokuSize; column++ {
+		possibleColumnValues := getColumnPossibleValues(column, possibleValuesRef, true)
+		columnValueOccurrences := countValueOccurrences(possibleColumnValues)
+
+		// For each block
+		blockOffset := column / model.BlockSize
+		for block := 0; block < model.BlockSize; block++ {
+			possibleBlockValues := getBlockPossibleValues(block*model.BlockSize+blockOffset, possibleValuesRef, true)
+			columnLookupsInBlock := possibleColumnValues[block*model.BlockSize : block*model.BlockSize+model.BlockSize]
+
+			if didChange := p.findPatternAndUpdate(columnValueOccurrences, possibleColumnValues, possibleBlockValues, columnLookupsInBlock); didChange {
+				changed = true
+			}
+		}
+	}
+
+	return
 }
 
 // Find the row-block-check pattern and update the possible value lookups.
