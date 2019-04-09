@@ -36,22 +36,22 @@ type unitFunction func([]*map[int]bool)
 func forEachUnit(fn unitFunction, possibleValuesRef *[][]*map[int]bool) {
 	// Rows
 	for row := 0; row < model.SudokuSize; row++ {
-		fn(getRowPossibleValues(row, possibleValuesRef))
+		fn(getRowPossibleValues(row, possibleValuesRef, false))
 	}
 
 	// Columns
 	for column := 0; column < model.SudokuSize; column++ {
-		fn(getColumnPossibleValues(column, possibleValuesRef))
+		fn(getColumnPossibleValues(column, possibleValuesRef, false))
 	}
 
 	// Blocks
 	for block := 0; block < model.SudokuSize; block++ {
-		fn(getBlockPossibleValues(block, possibleValuesRef))
+		fn(getBlockPossibleValues(block, possibleValuesRef, false))
 	}
 }
 
 // Get all possible values for a block in range [0; 8]
-func getBlockPossibleValues(block int, possibleValuesRef *[][]*map[int]bool) []*map[int]bool {
+func getBlockPossibleValues(block int, possibleValuesRef *[][]*map[int]bool, includeNilPtrs bool) []*map[int]bool {
 	pv := *possibleValuesRef
 
 	possibleBlockValues := make([]*map[int]bool, 0, model.SudokuSize)
@@ -60,7 +60,7 @@ func getBlockPossibleValues(block int, possibleValuesRef *[][]*map[int]bool) []*
 	startColumn := (block * model.BlockSize) % model.SudokuSize
 	for row := startRow; row < startRow+model.BlockSize; row++ {
 		for column := startColumn; column < startColumn+model.BlockSize; column++ {
-			if pv[row][column] != nil {
+			if pv[row][column] != nil || includeNilPtrs {
 				possibleBlockValues = append(possibleBlockValues, pv[row][column])
 			}
 		}
@@ -70,13 +70,13 @@ func getBlockPossibleValues(block int, possibleValuesRef *[][]*map[int]bool) []*
 }
 
 // Get all possible values for a row in range [0; 8]
-func getRowPossibleValues(row int, possibleValuesRef *[][]*map[int]bool) []*map[int]bool {
+func getRowPossibleValues(row int, possibleValuesRef *[][]*map[int]bool, includeNilPtrs bool) []*map[int]bool {
 	pv := *possibleValuesRef
 
 	possibleRowValues := make([]*map[int]bool, 0, model.SudokuSize)
 
 	for column := 0; column < model.SudokuSize; column++ {
-		if pv[row][column] != nil {
+		if pv[row][column] != nil || includeNilPtrs {
 			possibleRowValues = append(possibleRowValues, pv[row][column])
 		}
 	}
@@ -85,13 +85,13 @@ func getRowPossibleValues(row int, possibleValuesRef *[][]*map[int]bool) []*map[
 }
 
 // Get all possible values for a column in range [0; 8]
-func getColumnPossibleValues(column int, possibleValuesRef *[][]*map[int]bool) []*map[int]bool {
+func getColumnPossibleValues(column int, possibleValuesRef *[][]*map[int]bool, includeNilPtrs bool) []*map[int]bool {
 	pv := *possibleValuesRef
 
 	possibleColumnValues := make([]*map[int]bool, 0, model.SudokuSize)
 
 	for row := 0; row < model.SudokuSize; row++ {
-		if pv[row][column] != nil {
+		if pv[row][column] != nil || includeNilPtrs {
 			possibleColumnValues = append(possibleColumnValues, pv[row][column])
 		}
 	}
