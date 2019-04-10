@@ -213,3 +213,55 @@ func findHiddenNValues(count int, lookups []*map[int]bool, otherLookups []*map[i
 
 	return nil
 }
+
+// Calculate the binomial coefficient of n and k.
+func binomialCoefficient(n, k int) int {
+	result := 1
+
+	// binomialCoefficient(n, k) = binomialCoefficient(n, n - k)
+	if k > n-k {
+		k = n - k
+	}
+
+	for i := 0; i < k; i++ {
+		result *= n - i
+		result /= i + 1
+	}
+
+	return result
+}
+
+// Get all possible combinations of [count] rows out of [all].
+func getCombinations(count, all int) [][]int {
+	combinationCount := binomialCoefficient(all, count)
+	combinations := make([][]int, combinationCount)
+
+	counter := make([]int, count)
+	// Initialize counter
+	for i := 0; i < count; i++ {
+		counter[i] = i
+	}
+
+	// Collect all combinations.
+	for i := 0; i < combinationCount; i++ {
+		combinations[i] = make([]int, count)
+		for a := 0; a < count; a++ {
+			combinations[i][a] = counter[a]
+		}
+
+		// Increase counter
+		if i != combinationCount-1 {
+			counterIndex := count - 1
+			counter[counterIndex]++
+			for counter[counterIndex] > model.SudokuSize-(count-counterIndex) {
+				counterIndex--
+				counter[counterIndex]++
+			}
+			for a := counterIndex + 1; a < count; a++ {
+				counter[a] = counter[counterIndex] + (a - counterIndex)
+			}
+		}
+	}
+
+	return combinations
+}

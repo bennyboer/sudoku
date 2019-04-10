@@ -65,5 +65,6 @@ func initPatterns() []pattern.Pattern {
 		&pattern.HiddenQuadruple{},
 		&pattern.RowBlockCheck{},
 		&pattern.BlockRowCheck{},
+		&pattern.XWing{},
 	}[:]
 }
