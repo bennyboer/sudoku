@@ -17,7 +17,7 @@ const (
 // A model for a Sudoku.
 type Sudoku struct {
 	// All cells of a sudoku.
-	Cells [][]SudokuCell
+	Cells [][]*SudokuCell
 }
 
 // Get a new empty Sudoku.
@@ -26,7 +26,7 @@ func EmptySudoku() *Sudoku {
 }
 
 // Load a Sudoku with the passed values.
-func LoadSudoku(values *[9][9]int) (*Sudoku, error) {
+func LoadSudoku(values *[][]int) (*Sudoku, error) {
 	// Validate input first
 	if values == nil {
 		return nil, fmt.Errorf("cannot load Sudoku from no nil pointer")
@@ -59,22 +59,22 @@ func (s *Sudoku) SaveSudoku() *[][]int {
 }
 
 // Generate Sudoku cells filled with the passed values or if nil is given empty cells.
-func createCells(values *[9][9]int) *[][]SudokuCell {
-	cells := make([][]SudokuCell, SudokuSize)
+func createCells(values *[][]int) *[][]*SudokuCell {
+	cells := make([][]*SudokuCell, SudokuSize)
 
 	for row := 0; row < SudokuSize; row++ {
-		cells[row] = make([]SudokuCell, SudokuSize)
+		cells[row] = make([]*SudokuCell, SudokuSize)
 
 		for column := 0; column < SudokuSize; column++ {
 			value := 0
 
 			if values != nil {
-				value = values[row][column]
+				value = (*values)[row][column]
 			}
 
 			newCell, _ := NewSudokuCell(row, column, value)
 
-			cells[row][column] = *newCell
+			cells[row][column] = newCell
 		}
 	}
 
@@ -101,6 +101,37 @@ func (s *Sudoku) IsValid() bool {
 	}
 
 	return true
+}
+
+// Check whether the Sudoku is completely filled.
+// This does NOT mean that it is valid!
+func (s *Sudoku) IsComplete() bool {
+	for row := 0; row < SudokuSize; row++ {
+		for column := 0; column < SudokuSize; column++ {
+			cell := s.Cells[row][column]
+
+			if cell.IsEmpty() {
+				return false
+			}
+		}
+	}
+
+	return true;
+}
+
+// Check whether the Sudoku is completely filled AND valid.
+func (s *Sudoku) IsCompleteAndValid() bool {
+	for row := 0; row < SudokuSize; row++ {
+		for column := 0; column < SudokuSize; column++ {
+			cell := s.Cells[row][column]
+
+			if cell.IsEmpty() || cell.HasCollision() {
+				return false
+			}
+		}
+	}
+
+	return true;
 }
 
 // Get a String representation of the Sudoku.

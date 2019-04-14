@@ -8,7 +8,7 @@ import (
 func TestRandomCellChooser_Get(t *testing.T) {
 	cellChooser := RandomCellChooser{}
 
-	sudoku, _ := model.LoadSudoku(&[9][9]int{
+	sudoku, _ := model.LoadSudoku(&[][]int{
 		{0, 1, 2, 0, 0, 0, 5, 7, 0},
 		{6, 0, 0, 5, 0, 1, 0, 0, 4},
 		{4, 0, 0, 0, 2, 0, 0, 0, 8},
@@ -27,7 +27,7 @@ func TestRandomCellChooser_Get(t *testing.T) {
 			countOfEmptyCells, len(emptyCells))
 	}
 
-	sudoku, _ = model.LoadSudoku(&[9][9]int{
+	sudoku, _ = model.LoadSudoku(&[][]int{
 		{9, 1, 2, 8, 4, 6, 5, 7, 3},
 		{6, 8, 3, 5, 7, 1, 2, 9, 4},
 		{4, 5, 7, 3, 2, 9, 1, 6, 8},

@@ -96,13 +96,13 @@ func (c *SudokuCell) Position() Coordinates {
 }
 
 // Initialize this cells lookups using the passed Sudoku cells.
-func (c *SudokuCell) Init(cellsPtr *[][]SudokuCell) {
+func (c *SudokuCell) Init(cellsPtr *[][]*SudokuCell) {
 	c.initNeighbours(cellsPtr)
 	c.initTaken()
 }
 
 // Initialize the neighbour cell lookups for this cell.
-func (c *SudokuCell) initNeighbours(cellsPtr *[][]SudokuCell) {
+func (c *SudokuCell) initNeighbours(cellsPtr *[][]*SudokuCell) {
 	cells := *cellsPtr
 
 	neighbourCount := SudokuSize - 1
@@ -123,7 +123,7 @@ func (c *SudokuCell) initNeighbours(cellsPtr *[][]SudokuCell) {
 
 	for row := 0; row < SudokuSize; row++ {
 		for column := 0; column < SudokuSize; column++ {
-			cellPtr := &cells[row][column]
+			cellPtr := cells[row][column]
 			isNeighbourCell := false
 
 			// Check for row neighbour
@@ -199,6 +199,27 @@ func (c *SudokuCell) HasCollision() bool {
 	occurrences, found := c.taken[c.value]
 
 	return found && occurrences > 0
+}
+
+// Get all currently possible values for this cell.
+func (c *SudokuCell) PossibleValues() []int {
+	possibleValues := make([]int, 0, SudokuSize)
+
+	for value := 1; value <= 9; value++ {
+		occurrences, ok := c.taken[value]
+
+		if !ok || occurrences == 0 {
+			// Value not taken yet in this cells neighbourhood
+			possibleValues = append(possibleValues, value)
+		}
+	}
+
+	return possibleValues;
+}
+
+// Get all neighbour cells.
+func (c *SudokuCell) Neighbours() *CellNeighbours {
+	return &c.neighbours
 }
 
 // Get a String representation of a Sudoku cell.
