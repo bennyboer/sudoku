@@ -1,7 +1,6 @@
 package strategy
 
 import (
-	"fmt"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/strategy/pattern"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/strategy/util"
@@ -14,17 +13,20 @@ type Solver struct{}
 // Solve the passed Sudoku using the strategy solver.
 func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 	patterns := initPatterns()
+	patternCount := len(patterns)
+	fallback := pattern.Fallback{}
+
 	possibleValueLookupRef := util.PreparePossibleValueLookup(sudoku)
 
-	beforeS := fmt.Sprintf("%v", sudoku) // TODO Remove
-
-	iteration := 1
-	for patternIndex := 0; patternIndex < len(patterns); {
-		currentPattern := patterns[patternIndex]
-
-		changed := currentPattern.Apply(sudoku, possibleValueLookupRef)
-
-		fmt.Printf("\nITERATION %d WITH PATTERN %d -----\n", iteration, patternIndex) // TODO Remove
+	for patternIndex := 0; patternIndex < patternCount+1; {
+		isFallback := patternIndex >= patternCount
+		var changed bool
+		if !isFallback {
+			// Try the pattern
+			changed = patterns[patternIndex].Apply(sudoku, possibleValueLookupRef)
+		} else {
+			changed = fallback.Apply(sudoku, possibleValueLookupRef)
+		}
 
 		if sudoku.IsCompleteAndValid() {
 			return true, nil // Early exit because the solver finished its job
@@ -37,16 +39,7 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 		} else {
 			patternIndex++
 		}
-
-		iteration++
 	}
-
-	util.DebugPrintPossibleValues(possibleValueLookupRef)
-
-	afterS := fmt.Sprintf("%v", sudoku) // TODO Remove
-
-	fmt.Printf("Before:\n%s\n\n", beforeS) // TODO Remove
-	fmt.Printf("After:\n%s\n\n", afterS)   // TODO Remove
 
 	return sudoku.IsCompleteAndValid(), nil
 }
