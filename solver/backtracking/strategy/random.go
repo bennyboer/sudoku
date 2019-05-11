@@ -16,7 +16,7 @@ func (c *RandomCellChooser) Get(sudoku *model.Sudoku) *[]*model.SudokuCell {
 
 	for row := 0; row < model.SudokuSize; row++ {
 		for column := 0; column < model.SudokuSize; column++ {
-			cell := &sudoku.Cells[row][column]
+			cell := sudoku.Cells[row][column]
 
 			if cell.IsEmpty() {
 				emptyCells = append(emptyCells, cell)
