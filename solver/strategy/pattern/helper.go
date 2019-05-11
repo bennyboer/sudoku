@@ -1,18 +1,43 @@
 package pattern
 
 import (
+	"errors"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 )
 
+// A change of the updateValueInSudokuAndLookup method in the lookup.
+type lookupUpdateChange struct {
+	row           int
+	column        int
+	possibleValue int
+}
+
 // Helper function to update a value in the passed Sudoku as well in the possible values lookup matrix.
-func updateValueInSudokuAndLookup(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool, row int, column int, value int) {
+func updateValueInSudokuAndLookup(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool, row int, column int, value int, saveChanges bool) *[]lookupUpdateChange {
 	pv := *possibleValuesRef
+
+	var changes []lookupUpdateChange = nil
+	if saveChanges {
+		changes = make([]lookupUpdateChange, 0, model.NeighbourCount)
+	}
 
 	// Fill cell in Sudoku and update possible value lookup
 	cell := sudoku.Cells[row][column]
 	cell.SetValue(value)
 
 	// Update possible value lookup
+	if saveChanges {
+		// First save all possible values in changes slice
+		for v, p := range *pv[row][column] {
+			if p {
+				changes = append(changes, lookupUpdateChange{
+					row:           row,
+					column:        column,
+					possibleValue: v,
+				})
+			}
+		}
+	}
 	if pv[row][column] != nil {
 		pv[row][column] = nil
 	}
@@ -25,8 +50,51 @@ func updateValueInSudokuAndLookup(sudoku *model.Sudoku, possibleValuesRef *[][]*
 		lookupPtr := pv[position.Row][position.Column]
 		if lookupPtr != nil {
 			(*lookupPtr)[value] = false // Mark the value as "no more possible"
+
+			if saveChanges {
+				// Save change
+				changes = append(changes, lookupUpdateChange{
+					row:           position.Row,
+					column:        position.Column,
+					possibleValue: value,
+				})
+			}
 		}
 	}
+
+	return &changes
+}
+
+// Undo the changes done with updateValueInSudokuAndLookup.
+func undoValueUpdateInSudokuAndLookup(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool, row int, column int, value int, lookupChanges *[]lookupUpdateChange) error {
+	if lookupChanges == nil {
+		return errors.New("expected lookup changes slice and not a nil pointer")
+	}
+
+	pv := *possibleValuesRef
+
+	// Undo cell filling
+	cell := sudoku.Cells[row][column]
+	cell.SetValue(0)
+
+	// Undo cell possible lookup deletion
+	newPVLookup := make(map[int]bool)
+	for v := 1; v <= model.SudokuSize; v++ {
+		newPVLookup[v] = false
+	}
+	pv[row][column] = &newPVLookup
+
+	// Undo updated possible value lookups
+	for i := 0; i < len(*lookupChanges); i++ {
+		change := (*lookupChanges)[i]
+
+		pvLookup := pv[change.row][change.column]
+		if pvLookup != nil {
+			(*pvLookup)[change.possibleValue] = true
+		}
+	}
+
+	return nil
 }
 
 // Function processing a unit (Row, column or block) of possible value maps.
