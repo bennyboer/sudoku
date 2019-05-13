@@ -84,3 +84,29 @@ func TestSolver_SolveComplicated(t *testing.T) {
 		t.Errorf("Expected solver to solve the Sudoku properly")
 	}
 }
+
+func TestSolver_NotSolvable(t *testing.T) {
+	notSolvableSudoku, _ := model.LoadSudoku(&[][]int{
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 0, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1},
+	})
+
+	solver := Solver{}
+
+	solvable, e := solver.Solve(notSolvableSudoku)
+
+	if e != nil {
+		t.Errorf("Expected solver to not throw an error")
+	}
+
+	if solvable {
+		t.Errorf("Expected solver to say, that the sudoku is impossible")
+	}
+}
