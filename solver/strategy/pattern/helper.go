@@ -204,7 +204,7 @@ func findHiddenNValues(count int, lookups []*map[int]bool, otherLookups []*map[i
 	if len(occurrences) == count {
 		// Success! Collect values and return.
 		values := make([]int, 0, count)
-		for value, _ := range occurrences {
+		for value := range occurrences {
 			values = append(values, value)
 		}
 

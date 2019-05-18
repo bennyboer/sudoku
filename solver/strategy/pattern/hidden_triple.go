@@ -73,8 +73,8 @@ func (p *HiddenTriple) findHiddenTripleLookups(lookups []*map[int]bool) ([]*map[
 					}
 				}
 
-				if values := findHiddenNValues(len(lookupsToCheck), lookupsToCheck[:], otherLookups); values != nil {
-					return lookupsToCheck[:], values
+				if values := findHiddenNValues(len(lookupsToCheck), lookupsToCheck, otherLookups); values != nil {
+					return lookupsToCheck, values
 				}
 			}
 		}
