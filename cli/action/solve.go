@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/io/read"
+	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/io/write"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver"
 	"strings"
 )
@@ -70,8 +71,14 @@ func (a *Solve) Execute() {
 -----
 Using algorithm: '%s'
 Sudoku file path: '%s'
------
 `, *a.algorithm, *a.input)
+
+	if len(*a.output) != 0 {
+		// Output defined -> store the result to the file
+		fmt.Printf("Output file path (where to save the solved Sudoku to): '%s'\n", *a.output)
+	}
+
+	fmt.Println("-----")
 
 	fmt.Println("Loading Sudoku...")
 	reader := read.SudokuFileReader{
@@ -112,7 +119,19 @@ Sudoku file path: '%s'
 `, sudoku.String())
 
 		if len(*a.output) > 0 {
-			fmt.Printf("Storing the result to '%s'\n", *a.output)
+			fmt.Printf("Storing the result to '%s'...\n", *a.output)
+
+			writer := write.SudokuFileWriter{
+				FilePath: a.output,
+			}
+
+			err := writer.Write(sudoku)
+			if err != nil {
+				fmt.Printf(`An error occurred while trying to write Sudoku. Error:
+%s`, err.Error())
+			} else {
+				fmt.Println("Sudoku successfully stored!")
+			}
 		}
 	} else {
 		fmt.Println("Sudoku is NOT solvable. :(")

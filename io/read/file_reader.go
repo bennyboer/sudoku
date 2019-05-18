@@ -22,11 +22,11 @@ func (r *SudokuFileReader) Read() (*model.Sudoku, error) {
 
 	text := string(bytes)
 
-	return loadSudoku(&text)
+	return decodeSudoku(&text)
 }
 
-// Load the Sudoku from the passed serialized Sudoku string.
-func loadSudoku(encoded *string) (*model.Sudoku, error) {
+// Decode the passed encoded Sudoku string to Sudoku.
+func decodeSudoku(encoded *string) (*model.Sudoku, error) {
 	text := *encoded
 
 	lines := strings.Split(text, "\n")
