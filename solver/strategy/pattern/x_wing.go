@@ -138,7 +138,7 @@ func (p *XWing) unitsContainMoreOccurrencesOfValue(unitsValueOccurrences []*map[
 	for i := 0; i < len(combination); i++ {
 		unitOcc := *unitsValueOccurrences[combination[i]]
 
-		occurrences, _ := unitOcc[value]
+		occurrences := unitOcc[value]
 		if occurrences > count {
 			return true
 		}

@@ -33,7 +33,7 @@ func (p *Fallback) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]b
 			pvLookup := possibleValuesRow[column]
 			if pvLookup != nil {
 				// Found not filled value -> Fill
-				updateValueInSudokuAndLookup(sudoku, possibleValuesRef, row, column, sudokuToModify.Cells[row][column].Value(), false)
+				updateValueInSudokuAndLookup(sudoku, possibleValuesRef, row, column, sudokuToModify.Cells[row][column].Value())
 				return true
 			}
 		}

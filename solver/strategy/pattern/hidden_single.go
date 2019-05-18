@@ -26,7 +26,7 @@ func (p *HiddenSingle) findAndUpdateHiddenSingles(slice []*map[int]bool) bool {
 	changed := false
 
 	for value := 1; value <= model.SudokuSize; value++ {
-		var uniqueLookupPtr *map[int]bool = nil
+		var uniqueLookupPtr *map[int]bool
 
 		// Check if value is unique in unit slice
 		for _, lookupPtr := range slice {
@@ -47,7 +47,7 @@ func (p *HiddenSingle) findAndUpdateHiddenSingles(slice []*map[int]bool) bool {
 			// Mark all other values of the lookup as impossible.
 			uniqueLookup := *uniqueLookupPtr
 
-			for v, _ := range uniqueLookup {
+			for v := range uniqueLookup {
 				if v != value {
 					uniqueLookup[v] = false
 				}

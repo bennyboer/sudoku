@@ -66,7 +66,7 @@ func (p *HiddenQuadruple) findHiddenQuadrupleLookups(lookups []*map[int]bool) ([
 						lookups[b],
 						lookups[c],
 						lookups[d],
-					}[:]
+					}
 
 					otherLookups := make([]*map[int]bool, len(lookups)-len(lookupsToCheck))
 					for _, lookupPtr := range lookups {

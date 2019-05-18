@@ -214,7 +214,7 @@ func (c *SudokuCell) PossibleValues() []int {
 		}
 	}
 
-	return possibleValues;
+	return possibleValues
 }
 
 // Get all neighbour cells.

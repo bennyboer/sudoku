@@ -69,13 +69,13 @@ func (p *NakedPair) findAndUpdateNakedPairs(slice []*map[int]bool) bool {
 						if pvLookupPtr != pairPossibilitiesLookups[i1] && pvLookupPtr != pairPossibilitiesLookups[i2] {
 							pvLookup := *pvLookupPtr
 
-							possible, _ := pvLookup[pair1[0]]
+							possible := pvLookup[pair1[0]]
 							if possible {
 								pvLookup[pair1[0]] = false
 								changed = true
 							}
 
-							possible, _ = pvLookup[pair1[1]]
+							possible = pvLookup[pair1[1]]
 							if possible {
 								pvLookup[pair1[1]] = false
 								changed = true

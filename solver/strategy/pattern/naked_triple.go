@@ -46,7 +46,7 @@ func (p *NakedTriple) findAndUpdateNakedTriples(slice []*map[int]bool) bool {
 			lookup := *lookupPtr
 
 			for _, value := range values {
-				if possible, _ := lookup[value]; possible {
+				if possible := lookup[value]; possible {
 					lookup[value] = false
 					changed = true
 				}
@@ -70,7 +70,7 @@ func (p *NakedTriple) findThreeMatchingLookups(lookups []*map[int]bool) ([]*map[
 						lookups[a],
 						lookups[b],
 						lookups[c],
-					}[:], values
+					}, values
 				}
 			}
 		}
