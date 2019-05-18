@@ -58,7 +58,7 @@ func (p *BlockRowCheck) findPatternAndUpdate(blockValueOccurrences *map[int]int,
 	crossOcc := countValueOccurrences(rowLookupsInBlock)
 
 	for value, count := range *crossOcc {
-		totalOccurrences, _ := (*blockValueOccurrences)[value]
+		totalOccurrences := (*blockValueOccurrences)[value]
 
 		if totalOccurrences-count == 0 {
 			// All occurrences of [value] are only in the row (within the block)!

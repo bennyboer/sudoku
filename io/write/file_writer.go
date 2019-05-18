@@ -13,7 +13,7 @@ type SudokuFileWriter struct {
 	FilePath *string
 }
 
-func (w *SudokuFileWriter) Write(sudoku *model.Sudoku) (error) {
+func (w *SudokuFileWriter) Write(sudoku *model.Sudoku) error {
 	encoded := encodeSudoku(sudoku)
 
 	err := ioutil.WriteFile(*w.FilePath, []byte(encoded), 0644)

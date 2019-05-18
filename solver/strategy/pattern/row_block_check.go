@@ -22,7 +22,7 @@ func (p *RowBlockCheck) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[
 			possibleBlockValues := getBlockPossibleValues(block+startBlock, possibleValuesRef, true)
 			rowLookupsInBlock := possibleRowValues[block*model.BlockSize : block*model.BlockSize+model.BlockSize]
 
-			if didChange := p.findPatternAndUpdate(rowValueOccurrences, possibleRowValues, possibleBlockValues, rowLookupsInBlock); didChange {
+			if didChange := p.findPatternAndUpdate(rowValueOccurrences, possibleBlockValues, rowLookupsInBlock); didChange {
 				changed = true
 			}
 		}
@@ -39,7 +39,7 @@ func (p *RowBlockCheck) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[
 			possibleBlockValues := getBlockPossibleValues(block*model.BlockSize+blockOffset, possibleValuesRef, true)
 			columnLookupsInBlock := possibleColumnValues[block*model.BlockSize : block*model.BlockSize+model.BlockSize]
 
-			if didChange := p.findPatternAndUpdate(columnValueOccurrences, possibleColumnValues, possibleBlockValues, columnLookupsInBlock); didChange {
+			if didChange := p.findPatternAndUpdate(columnValueOccurrences, possibleBlockValues, columnLookupsInBlock); didChange {
 				changed = true
 			}
 		}
@@ -50,7 +50,6 @@ func (p *RowBlockCheck) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[
 
 // Find the row-block-check pattern and update the possible value lookups.
 func (p *RowBlockCheck) findPatternAndUpdate(rowValueOccurrences *map[int]int,
-	rowUnit []*map[int]bool,
 	blockUnit []*map[int]bool,
 	rowLookupsInBlock []*map[int]bool) bool {
 	changed := false
@@ -59,11 +58,13 @@ func (p *RowBlockCheck) findPatternAndUpdate(rowValueOccurrences *map[int]int,
 	crossOcc := countValueOccurrences(rowLookupsInBlock)
 
 	for value, count := range *crossOcc {
-		totalOccurrences, _ := (*rowValueOccurrences)[value]
+		totalOccurrences := (*rowValueOccurrences)[value]
 
 		if totalOccurrences-count == 0 {
 			// All occurrences of [value] are only in the block! -> Remove all other occurrences of [value] in block.
-			for _, blockLookupPtr := range blockUnit {
+			for i := 0; i < len(blockUnit); i++ {
+				blockLookupPtr := blockUnit[i]
+
 				if blockLookupPtr == nil {
 					continue
 				}

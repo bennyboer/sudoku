@@ -4,13 +4,6 @@ import (
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 )
 
-// A change of the updateValueInSudokuAndLookup method in the lookup.
-type lookupUpdateChange struct {
-	row           int
-	column        int
-	possibleValue int
-}
-
 // Helper function to update a value in the passed Sudoku as well in the possible values lookup matrix.
 func updateValueInSudokuAndLookup(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool, row int, column int, value int) {
 	pv := *possibleValuesRef

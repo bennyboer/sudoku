@@ -77,8 +77,8 @@ func (p *HiddenPair) findAndUpdateHiddenPairs(slice []*map[int]bool) bool {
 	for i := 0; i < len(pairs); i++ {
 		pair := pairs[i]
 
-		var lookup1Ptr *map[int]bool = nil
-		var lookup2Ptr *map[int]bool = nil
+		var lookup1Ptr *map[int]bool
+		var lookup2Ptr *map[int]bool
 
 		for _, lookupPtr := range slice {
 			lookup := *lookupPtr

@@ -15,7 +15,7 @@ pipeline {
                 docker { image 'obraun/vss-jenkins' }
             }   
             steps {
-                sh 'golangci-lint run --enable-all --disable goimports --tests=false'
+                sh 'golangci-lint run --enable-all --disable goimports --disable lll --disable nakedret --tests=false'
             }
         }
         stage('Build Docker Image') {
