@@ -85,5 +85,6 @@ The following actions are available:
 func actions() []action.Action {
 	return []action.Action{
 		action.NewSolve(),
+		action.NewDifficulty(),
 	}[:]
 }

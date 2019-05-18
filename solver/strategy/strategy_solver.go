@@ -2,7 +2,6 @@ package strategy
 
 import (
 	"errors"
-	"fmt"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/strategy/pattern"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/strategy/util"
@@ -65,7 +64,6 @@ func (s *Solver) Solve(sudoku *model.Sudoku) (bool, error) {
 
 		if sudoku.IsCompleteAndValid() {
 			s.calculateDifficulty(emptyCells, maxPatternIndex, patternCount)
-			fmt.Printf("Empty cells: %d, Max pattern index: %d ==> Difficulty: %f\n", emptyCells, maxPatternIndex, *s.lastPassDifficulty)
 			return true, nil // Early exit because the solver finished its job
 		}
 	}
