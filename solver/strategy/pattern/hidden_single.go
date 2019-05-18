@@ -47,7 +47,7 @@ func (p *HiddenSingle) findAndUpdateHiddenSingles(slice []*map[int]bool) bool {
 			// Mark all other values of the lookup as impossible.
 			uniqueLookup := *uniqueLookupPtr
 
-			for v, _ := range uniqueLookup {
+			for v := range uniqueLookup {
 				if v != value {
 					uniqueLookup[v] = false
 				}

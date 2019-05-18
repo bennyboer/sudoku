@@ -70,7 +70,7 @@ func (p *NakedTriple) findThreeMatchingLookups(lookups []*map[int]bool) ([]*map[
 						lookups[a],
 						lookups[b],
 						lookups[c],
-					}[:], values
+					}, values
 				}
 			}
 		}

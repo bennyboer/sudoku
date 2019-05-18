@@ -121,5 +121,5 @@ func initPatterns() []pattern.Pattern {
 		&pattern.RowBlockCheck{},
 		&pattern.BlockRowCheck{},
 		&pattern.XWing{},
-	}[:]
+	}
 }

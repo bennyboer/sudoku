@@ -156,7 +156,7 @@ func findNakedValues(count int, lookups ...*map[int]bool) []int {
 	if len(valuesSet) <= count {
 		values := make([]int, 0, len(valuesSet))
 
-		for value, _ := range valuesSet {
+		for value := range valuesSet {
 			values = append(values, value)
 		}
 

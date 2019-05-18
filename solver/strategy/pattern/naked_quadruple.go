@@ -72,7 +72,7 @@ func (p *NakedQuadruple) findFourMatchingLookups(lookups []*map[int]bool) ([]*ma
 							lookups[b],
 							lookups[c],
 							lookups[d],
-						}[:], values
+						}, values
 					}
 				}
 			}

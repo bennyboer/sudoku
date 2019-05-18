@@ -87,5 +87,5 @@ func actions() []action.Action {
 		action.NewSolve(),
 		action.NewDifficulty(),
 		action.NewGenerate(),
-	}[:]
+	}
 }

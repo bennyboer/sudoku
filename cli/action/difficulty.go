@@ -81,17 +81,18 @@ This translates to %s
 
 // Translate the passed continuous difficulty to a discrete difficulty step.
 func (a *Difficulty) translateDifficulty(difficulty float64) string {
-	if difficulty < 0.1 {
+	switch {
+	case difficulty < 0.1:
 		return "VERY EASY"
-	} else if difficulty < 0.2 {
+	case difficulty < 0.2:
 		return "EASY"
-	} else if difficulty < 0.4 {
+	case difficulty < 0.4:
 		return "MODERATE"
-	} else if difficulty < 0.6 {
+	case difficulty < 0.6:
 		return "HARD"
-	} else if difficulty < 0.8 {
+	case difficulty < 0.8:
 		return "VERY HARD"
-	} else {
+	default:
 		return "INSANE"
 	}
 }
