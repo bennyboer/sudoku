@@ -77,7 +77,7 @@ The following actions are available:
 
 	actions := actions()
 	for _, a := range actions {
-		fmt.Printf("   - %s \t\t\t\t| Type `sudoku help %s` for help\n", a.Name(), a.Name())
+		fmt.Printf("   - %-40v | Type `sudoku help %s` for help\n", a.Name(), a.Name())
 	}
 }
 
@@ -86,5 +86,6 @@ func actions() []action.Action {
 	return []action.Action{
 		action.NewSolve(),
 		action.NewDifficulty(),
+		action.NewGenerate(),
 	}[:]
 }
