@@ -66,7 +66,7 @@ Difficulty: %f
 
 	sudoku := generator.NewBacktrackingGenerator().Generate(*a.difficulty)
 
-	if len(*a.output) < 0 {
+	if len(*a.output) > 0 {
 		writer := write.SudokuFileWriter{
 			FilePath: a.output,
 		}
