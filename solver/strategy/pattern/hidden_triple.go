@@ -64,7 +64,7 @@ func (p *HiddenTriple) findHiddenTripleLookups(lookups []*map[int]bool) ([]*map[
 					lookups[a],
 					lookups[b],
 					lookups[c],
-				}[:]
+				}
 
 				otherLookups := make([]*map[int]bool, len(lookups)-len(lookupsToCheck))
 				for _, lookupPtr := range lookups {

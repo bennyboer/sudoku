@@ -20,6 +20,6 @@ func TestHasUniqueSolution(t *testing.T) {
 	hasUniqueSolution, _ := HasUniqueSolution(sudoku)
 
 	if !hasUniqueSolution {
-		t.Errorf("Expected Sudoku to have an unique solution");
+		t.Errorf("Expected Sudoku to have an unique solution")
 	}
 }

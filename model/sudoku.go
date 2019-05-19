@@ -116,7 +116,7 @@ func (s *Sudoku) IsComplete() bool {
 		}
 	}
 
-	return true;
+	return true
 }
 
 // Check whether the Sudoku is completely filled AND valid.
@@ -131,7 +131,7 @@ func (s *Sudoku) IsCompleteAndValid() bool {
 		}
 	}
 
-	return true;
+	return true
 }
 
 // Get a String representation of the Sudoku.

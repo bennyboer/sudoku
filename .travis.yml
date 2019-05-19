@@ -11,4 +11,4 @@ script:
     - go test ./... -v -coverprofile=coverage.out
     - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -repotoken $COVERALLS_TOKEN
     - go test ./... -bench=.
-    - golangci-lint run --enable-all --disable goimports --tests=false
+    - golangci-lint run --enable-all --disable goimports --disable lll --disable nakedret --disable unparam --tests=false

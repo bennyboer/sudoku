@@ -46,7 +46,7 @@ func (p *NakedQuadruple) findAndUpdateNakedQuadruples(slice []*map[int]bool) boo
 			lookup := *lookupPtr
 
 			for _, value := range values {
-				if possible, _ := lookup[value]; possible {
+				if possible := lookup[value]; possible {
 					lookup[value] = false
 					changed = true
 				}
@@ -72,7 +72,7 @@ func (p *NakedQuadruple) findFourMatchingLookups(lookups []*map[int]bool) ([]*ma
 							lookups[b],
 							lookups[c],
 							lookups[d],
-						}[:], values
+						}, values
 					}
 				}
 			}

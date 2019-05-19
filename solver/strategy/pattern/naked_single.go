@@ -39,7 +39,7 @@ func (p *NakedSingle) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[in
 				}
 
 				if onlyOnePossibleValue {
-					updateValueInSudokuAndLookup(sudoku, possibleValuesRef, row, column, onlyPossibleValue, false)
+					updateValueInSudokuAndLookup(sudoku, possibleValuesRef, row, column, onlyPossibleValue)
 
 					changed = true
 				}
