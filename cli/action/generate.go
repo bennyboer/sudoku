@@ -65,12 +65,17 @@ Difficulty: %f
 	fmt.Println("-----")
 
 	sudoku := generator.NewBacktrackingGenerator().Generate(*a.difficulty)
-	writer := write.SudokuFileWriter{
-		FilePath: a.output,
-	}
 
-	err := writer.Write(sudoku)
-	if err != nil {
-		fmt.Printf("There was an error trying to save your sudoku :C %s", err)
+	if len(*a.output) < 0 {
+		writer := write.SudokuFileWriter{
+			FilePath: a.output,
+		}
+
+		err := writer.Write(sudoku)
+		if err != nil {
+			fmt.Printf("There was an error trying to save your sudoku :C %s\n", err)
+		}
+	} else {
+		fmt.Printf("Here is your sudoku: %s\n", sudoku.String())
 	}
 }
