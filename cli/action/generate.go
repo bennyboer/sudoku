@@ -76,5 +76,5 @@ Difficulty: %f
 			fmt.Printf("There was an error trying to save your sudoku :C %s\n", err)
 		}
 	}
-	fmt.Printf("Here is your sudoku: %s\n", sudoku.String())
+	fmt.Printf("Here is your sudoku: \n%s\n", sudoku.String())
 }
