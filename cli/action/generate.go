@@ -3,6 +3,8 @@ package action
 import (
 	"flag"
 	"fmt"
+	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/generator"
+	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/io/write"
 )
 
 // Action generating a Sudoku.
@@ -62,6 +64,13 @@ Difficulty: %f
 
 	fmt.Println("-----")
 
-	// TODO Implement generator first
-	fmt.Println("NOT IMPLEMENTED YET!")
+	sudoku := generator.NewBacktrackingGenerator().Generate(*a.difficulty)
+	writer := write.SudokuFileWriter{
+		FilePath: a.output,
+	}
+
+	err := writer.Write(sudoku)
+	if err != nil {
+		fmt.Printf("There was an error trying to save your sudoku :C %s", err)
+	}
 }
