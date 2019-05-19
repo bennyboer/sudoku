@@ -1,6 +1,10 @@
 package generator
 
-import "github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
+import (
+	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
+	"math/rand"
+	"time"
+)
 
 // Interface for Sudoku generators.
 type SudokuGenerator interface {
@@ -9,5 +13,11 @@ type SudokuGenerator interface {
 	Generate(difficulty float64) *model.Sudoku
 }
 
-type SudokuGeneratorBackTracking struct {
+type SudokuGeneratorBacktracking struct {
+}
+
+func NewBacktrackingGenerator() *SudokuGeneratorBacktracking {
+	rand.Seed(time.Now().UnixNano())
+
+	return &SudokuGeneratorBacktracking{}
 }
