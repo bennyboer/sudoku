@@ -75,7 +75,6 @@ Difficulty: %f
 		if err != nil {
 			fmt.Printf("There was an error trying to save your sudoku :C %s\n", err)
 		}
-	} else {
-		fmt.Printf("Here is your sudoku: %s\n", sudoku.String())
 	}
+	fmt.Printf("Here is your sudoku: %s\n", sudoku.String())
 }
