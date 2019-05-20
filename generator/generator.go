@@ -16,8 +16,17 @@ type SudokuGenerator interface {
 type SudokuGeneratorBacktracking struct {
 }
 
+type SudokuGeneratorDifficulty struct {
+}
+
 func NewBacktrackingGenerator() *SudokuGeneratorBacktracking {
 	rand.Seed(time.Now().UnixNano())
 
 	return &SudokuGeneratorBacktracking{}
+}
+
+func NewDifficultyGenerator() *SudokuGeneratorDifficulty {
+	rand.Seed(time.Now().UnixNano())
+
+	return &SudokuGeneratorDifficulty{}
 }
