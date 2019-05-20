@@ -7,11 +7,16 @@ import (
 	"math/rand"
 )
 
-func (sg *SudokuGeneratorBacktracking) Generate(difficulty float64) *model.Sudoku {
+func (sg *SudokuGeneratorBacktracking) Generate(difficulty float64) (*model.Sudoku, error) {
 	var lastState *model.Sudoku
 	solver := backtracking.Solver{CellChooserType: strategy.Linear}
 	sudoku := model.EmptySudoku()
-	deletioncount := int(((81 - 15) * difficulty) / 100)
+	_, err := solver.Solve(sudoku)
+	if err != nil {
+		return nil, err
+	}
+
+	deletioncount := int(((81 - 17) * difficulty) / 100)
 
 	for i := 0; i < deletioncount; i++ {
 		lastState = sudoku
@@ -24,5 +29,5 @@ func (sg *SudokuGeneratorBacktracking) Generate(difficulty float64) *model.Sudok
 		}
 	}
 
-	return sudoku
+	return sudoku, nil
 }
