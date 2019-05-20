@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"errors"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking/strategy"
@@ -16,11 +17,23 @@ func (sg *SudokuGeneratorBacktracking) Generate(difficulty float64) (*model.Sudo
 		return nil, err
 	}
 
+	if difficulty > 1.0 || difficulty < 0 {
+		return nil, errors.New("The difficulty must be between 0 and 1")
+	}
+
 	deletioncount := int((81 - 17) * difficulty)
 
 	for i := 0; i < deletioncount; i++ {
 		lastState = sudoku
-		sudoku.Cells[rand.Intn(9)][rand.Intn(9)].SetValue(0)
+
+		x := rand.Intn(9)
+		y := rand.Intn(9)
+		for sudoku.Cells[x][y].Value() == 0 {
+			x = rand.Intn(9)
+			y = rand.Intn(9)
+		}
+
+		sudoku.Cells[x][y].SetValue(0)
 		sudokuCopy, _ := model.LoadSudoku(sudoku.SaveSudoku())
 
 		success, err := solver.Solve(sudokuCopy)
