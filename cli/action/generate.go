@@ -64,7 +64,10 @@ Difficulty: %f
 
 	fmt.Println("-----")
 
-	sudoku := generator.NewBacktrackingGenerator().Generate(*a.difficulty)
+	sudoku, err := generator.NewBacktrackingGenerator().Generate(*a.difficulty)
+	if err != nil {
+		fmt.Printf("An error was thrown while generating a Sudoku. Error:\n%s", err.Error())
+	}
 
 	if len(*a.output) > 0 {
 		writer := write.SudokuFileWriter{
