@@ -49,7 +49,6 @@ func (sg *SudokuGeneratorBacktracking) Generate(difficulty float64) (*model.Sudo
 }
 
 func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64) (*model.Sudoku, error) {
-	var lastState *model.Sudoku
 	solver := strategy.Solver{}
 	sudoku := model.EmptySudoku()
 	_, err := solver.Solve(sudoku)
@@ -72,7 +71,8 @@ func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64) (*model
 
 		success, err := solver.Solve(sudokuCopy)
 		if !success && err != nil {
-			sudoku = lastState
+			sudoku = model.EmptySudoku()
+			_, _ = solver.Solve(sudoku)
 		}
 
 		localDifficulty = solver.GetLastPassDifficulty()
