@@ -78,7 +78,7 @@ Difficulty: %f
 		fmt.Printf("Output file path (where to save the generated Sudoku to): '%s'\n", *a.output)
 	}
 
-	fmt.Println("Generator used %s\n", a.algorithm)
+	fmt.Println("Generator used %s\n", *a.algorithm)
 	fmt.Println("-----")
 
 	generator, ok := (*generator.AllGenerationAlgorithms())[*a.algorithm]
