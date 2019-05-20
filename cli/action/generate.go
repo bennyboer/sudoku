@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/generator"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/io/write"
+	"strings"
 )
 
 // Action generating a Sudoku.
@@ -17,6 +18,9 @@ type Generate struct {
 
 	// Where to write the generated Sudoku (optional).
 	output *string
+
+	// Strategy used to solve
+	algorithm *string
 }
 
 func NewGenerate() *Generate {
@@ -42,6 +46,18 @@ func (a *Generate) FlagSet() *flag.FlagSet {
 			"",
 			"Where to write the generated Sudoku (optional)",
 		)
+
+		generatorAlgorithms := *generator.AllGenerationAlgorithms()
+		algorithmNames := make([]string, 0, len(generatorAlgorithms))
+		for name := range generatorAlgorithms {
+			algorithmNames = append(algorithmNames, name)
+		}
+
+		a.algorithm = a.flagSet.String(
+			"algorithm",
+			"difficulty",
+			fmt.Sprintf("The algorithm useg to generate the Sudoku (%s).", strings.Join(algorithmNames, ", ")),
+		)
 	}
 
 	return a.flagSet
@@ -62,11 +78,19 @@ Difficulty: %f
 		fmt.Printf("Output file path (where to save the generated Sudoku to): '%s'\n", *a.output)
 	}
 
+	fmt.Println("Generator used %s\n", a.algorithm)
 	fmt.Println("-----")
 
-	sudoku, err := generator.NewBacktrackingGenerator().Generate(*a.difficulty)
+	generator, ok := (*generator.AllGenerationAlgorithms())[*a.algorithm]
+	if !ok {
+		fmt.Printf("No Algorithm found for %s\n", *a.algorithm)
+		return
+	}
+
+	sudoku, err := generator.Generate(*a.difficulty)
 	if err != nil {
 		fmt.Printf("An error was thrown while generating a Sudoku. Error:\n%s", err.Error())
+		return
 	}
 
 	if len(*a.output) > 0 {

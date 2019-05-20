@@ -30,3 +30,12 @@ func NewDifficultyGenerator() *SudokuGeneratorDifficulty {
 
 	return &SudokuGeneratorDifficulty{}
 }
+
+func AllGenerationAlgorithms() *map[string]SudokuGenerator {
+	gMap := make(map[string]SudokuGenerator)
+
+	gMap["difficulty"] = NewDifficultyGenerator()
+	gMap["simple"] = NewBacktrackingGenerator()
+
+	return &gMap
+}
