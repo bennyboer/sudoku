@@ -21,7 +21,7 @@ func (sg *SudokuGeneratorBacktracking) Generate(difficulty float64) (*model.Sudo
 	for i := 0; i < deletioncount; i++ {
 		lastState = sudoku
 		sudoku.Cells[rand.Intn(9)][rand.Intn(9)].SetValue(0)
-		sudokuCopy, err := model.LoadSudoku(sudoku.SaveSudoku())
+		sudokuCopy, _ := model.LoadSudoku(sudoku.SaveSudoku())
 
 		success, err := solver.Solve(sudokuCopy)
 		if !success && err != nil {
