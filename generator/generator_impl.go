@@ -11,7 +11,7 @@ func (sg *SudokuGeneratorBacktracking) Generate(difficulty float64) *model.Sudok
 	var lastState *model.Sudoku
 	solver := backtracking.Solver{CellChooserType: strategy.Linear}
 	sudoku := model.EmptySudoku()
-	deletioncount := int(((81 - 15) * difficulty) / 100)
+	deletioncount := int(((81 - 17) * difficulty) / 100)
 
 	for i := 0; i < deletioncount; i++ {
 		lastState = sudoku
