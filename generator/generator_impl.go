@@ -2,7 +2,6 @@ package generator
 
 import (
 	"errors"
-	"fmt"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking"
 	s "github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking/strategy"
@@ -73,12 +72,10 @@ func (generator *SudokuGeneratorDifficulty) backtrack(sudoku *model.Sudoku, diff
 	}
 
 	sudoku.Cells[x][y].SetValue(0)
-	fmt.Printf("Sudoku at %d %d is %d\n", x, y, sudoku.Cells[x][y].Value())
 	sudokuCopy, _ := model.LoadSudoku(sudoku.SaveSudoku())
 
 	success, err := solver.Solve(sudokuCopy)
 	localDifficulty := solver.GetLastPassDifficulty()
-	fmt.Printf("Local difficulty is %f\n", localDifficulty)
 	if success && err == nil {
 		if localDifficulty > generator.difficulty {
 			generator.sudoku = sudoku
