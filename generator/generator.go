@@ -14,6 +14,8 @@ type SudokuGenerator interface {
 }
 
 type SudokuGeneratorSimple struct {
+	sudoku      *model.Sudoku
+	isCancelled bool
 }
 
 type SudokuGeneratorDifficulty struct {
