@@ -47,7 +47,7 @@ func (generator *SudokuGeneratorSimple) simpleGenerate(difficulty float64, group
 	generator.sudoku = sudoku
 }
 
-func (sg *SudokuGeneratorSimple) Generate(difficulty float64) (*model.Sudoku, error) {
+func (generator *SudokuGeneratorSimple) Generate(difficulty float64) (*model.Sudoku, error) {
 	var waitgroup = &sync.WaitGroup{}
 
 	if difficulty > 1.0 || difficulty < 0 {
@@ -55,14 +55,14 @@ func (sg *SudokuGeneratorSimple) Generate(difficulty float64) (*model.Sudoku, er
 	}
 
 	waitgroup.Add(1)
-	go sg.simpleGenerate(difficulty, waitgroup)
+	go generator.simpleGenerate(difficulty, waitgroup)
 	go func() {
 		time.Sleep(2 * time.Second)
-		sg.isCancelled = true
+		generator.isCancelled = true
 	}()
 
 	waitgroup.Wait()
-	return sg.sudoku, nil
+	return generator.sudoku, nil
 }
 
 func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64) (*model.Sudoku, error) {
@@ -72,6 +72,10 @@ func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64) (*model
 	waitgroup := &sync.WaitGroup{}
 	if err != nil {
 		return nil, err
+	}
+
+	if difficulty > 1.0 || difficulty < 0 {
+		return nil, errors.New("the difficulty must be between 0 and 1")
 	}
 
 	waitgroup.Add(1)
