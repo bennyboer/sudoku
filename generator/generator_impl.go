@@ -8,6 +8,7 @@ import (
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/strategy"
 	"math"
 	"math/rand"
+	"time"
 )
 
 func (sg *SudokuGeneratorSimple) Generate(difficulty float64) (*model.Sudoku, error) {
@@ -56,7 +57,15 @@ func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64) (*model
 		return nil, err
 	}
 
-	generator.backtrack(sudoku, difficulty)
+	go generator.backtrack(sudoku, difficulty)
+	go func() {
+		time.Sleep(2 * time.Second)
+		generator.isCancelled = true
+	}()
+	// Waiting for results
+	for generator.sudoku == nil {
+
+	}
 
 	return generator.sudoku, nil
 }
