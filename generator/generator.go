@@ -13,22 +13,25 @@ type SudokuGenerator interface {
 	Generate(difficulty float64) (*model.Sudoku, error)
 }
 
-type SudokuGeneratorBacktracking struct {
+type SudokuGeneratorSimple struct {
 }
 
 type SudokuGeneratorDifficulty struct {
+	difficulty  float64
+	sudoku      *model.Sudoku
+	isCancelled bool
 }
 
-func NewBacktrackingGenerator() *SudokuGeneratorBacktracking {
+func NewBacktrackingGenerator() *SudokuGeneratorSimple {
 	rand.Seed(time.Now().UnixNano())
 
-	return &SudokuGeneratorBacktracking{}
+	return &SudokuGeneratorSimple{}
 }
 
 func NewDifficultyGenerator() *SudokuGeneratorDifficulty {
 	rand.Seed(time.Now().UnixNano())
 
-	return &SudokuGeneratorDifficulty{}
+	return &SudokuGeneratorDifficulty{0, nil, false}
 }
 
 func AllGenerationAlgorithms() *map[string]SudokuGenerator {

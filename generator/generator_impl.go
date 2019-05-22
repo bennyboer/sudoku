@@ -2,6 +2,7 @@ package generator
 
 import (
 	"errors"
+	"fmt"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking"
 	s "github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking/strategy"
@@ -10,7 +11,7 @@ import (
 	"math/rand"
 )
 
-func (sg *SudokuGeneratorBacktracking) Generate(difficulty float64) (*model.Sudoku, error) {
+func (sg *SudokuGeneratorSimple) Generate(difficulty float64) (*model.Sudoku, error) {
 	var lastState *model.Sudoku
 	solver := backtracking.Solver{CellChooserType: s.Linear}
 	sudoku := model.EmptySudoku()
@@ -56,27 +57,42 @@ func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64) (*model
 		return nil, err
 	}
 
-	localDifficulty := solver.GetLastPassDifficulty()
+	generator.backtrack(sudoku, difficulty)
 
-	for math.Abs(difficulty-localDifficulty) > 0.05 {
-		x := rand.Intn(9)
-		y := rand.Intn(9)
-		for sudoku.Cells[x][y].Value() == 0 {
-			x = rand.Intn(9)
-			y = rand.Intn(9)
-		}
+	return generator.sudoku, nil
+}
 
-		sudoku.Cells[x][y].SetValue(0)
-		sudokuCopy, _ := model.LoadSudoku(sudoku.SaveSudoku())
+func (generator *SudokuGeneratorDifficulty) backtrack(sudoku *model.Sudoku, difficulty float64) {
+	solver := strategy.Solver{}
 
-		success, err := solver.Solve(sudokuCopy)
-		if !success && err != nil {
-			sudoku = model.EmptySudoku()
-			_, _ = solver.Solve(sudoku)
-		}
-
-		localDifficulty = solver.GetLastPassDifficulty()
+	x := rand.Intn(9)
+	y := rand.Intn(9)
+	for sudoku.Cells[x][y].Value() == 0 {
+		x = rand.Intn(9)
+		y = rand.Intn(9)
 	}
 
-	return sudoku, nil
+	sudoku.Cells[x][y].SetValue(0)
+	fmt.Printf("Sudoku at %d %d is %d\n", x, y, sudoku.Cells[x][y].Value())
+	sudokuCopy, _ := model.LoadSudoku(sudoku.SaveSudoku())
+
+	success, err := solver.Solve(sudokuCopy)
+	localDifficulty := solver.GetLastPassDifficulty()
+	fmt.Printf("Local difficulty is %f\n", localDifficulty)
+	if success && err == nil {
+		if localDifficulty > generator.difficulty {
+			generator.sudoku = sudoku
+			generator.difficulty = localDifficulty
+		}
+	}
+
+	if (!success || err != nil) ||
+		math.Abs(difficulty-localDifficulty) < 0.05 ||
+		difficulty < localDifficulty ||
+		generator.isCancelled {
+
+		return
+	}
+
+	generator.backtrack(sudoku, difficulty)
 }
