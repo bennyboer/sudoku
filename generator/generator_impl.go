@@ -20,7 +20,7 @@ func (sg *SudokuGeneratorSimple) Generate(difficulty float64) (*model.Sudoku, er
 	}
 
 	if difficulty > 1.0 || difficulty < 0 {
-		return nil, errors.New("The difficulty must be between 0 and 1")
+		return nil, errors.New("the difficulty must be between 0 and 1")
 	}
 
 	deletioncount := int((81 - 17) * difficulty)
