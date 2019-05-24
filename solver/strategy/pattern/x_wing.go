@@ -1,7 +1,6 @@
 package pattern
 
 import (
-	"fmt"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 )
 
@@ -42,8 +41,6 @@ func (p *XWing) Apply(sudoku *model.Sudoku, possibleValuesRef *[][]*map[int]bool
 						columnHaveMore := p.unitsContainMoreOccurrencesOfValue(columnValueOccurrences, columnCombination, value, 2)
 
 						if rowHaveMore != columnHaveMore {
-							fmt.Printf("Can reduce value %d in rows %v and columns %v!\n", value, rowCombination, columnCombination)
-
 							changed = false
 
 							// Can reduce value now in either rows or columns based on which of rowHaveMore or columnHaveMore is true
