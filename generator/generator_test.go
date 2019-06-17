@@ -2,12 +2,13 @@ package generator
 
 import (
 	"testing"
+	"time"
 )
 
 func TestSudokuGeneratorBackTracking_Generate(t *testing.T) {
 	generator := NewBacktrackingGenerator()
 
-	sudoku, err := generator.Generate(0.1)
+	sudoku, err := generator.Generate(0.1, time.Second*2)
 	if err != nil {
 		t.Errorf("expected no error")
 		return
@@ -21,7 +22,7 @@ func TestSudokuGeneratorBackTracking_Generate(t *testing.T) {
 func TestSudokuGeneratorDifficulty_Generate(t *testing.T) {
 	generator := NewDifficultyGenerator()
 
-	sudoku, err := generator.Generate(0.8)
+	sudoku, err := generator.Generate(0.8, time.Second*2)
 	if err != nil {
 		t.Errorf("expected no error")
 		return
