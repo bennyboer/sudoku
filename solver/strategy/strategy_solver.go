@@ -106,6 +106,10 @@ func (s *Solver) Measure(sudoku *model.Sudoku) (float64, error) {
 	return *s.lastPassDifficulty, nil
 }
 
+func (s *Solver) GetLastPassDifficulty() float64 {
+	return *s.lastPassDifficulty
+}
+
 // Initialize the patterns slice.
 // The patterns are used to be applied on a Sudoku in order to solve it.
 func initPatterns() []pattern.Pattern {
