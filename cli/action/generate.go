@@ -6,6 +6,7 @@ import (
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/generator"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/io/write"
 	"strings"
+	"time"
 )
 
 // Action generating a Sudoku.
@@ -21,6 +22,9 @@ type Generate struct {
 
 	// Strategy used to solve
 	algorithm *string
+
+	// Timeout after which the generator is force-completed.
+	timeout *time.Duration
 }
 
 func NewGenerate() *Generate {
@@ -45,6 +49,12 @@ func (a *Generate) FlagSet() *flag.FlagSet {
 			"out",
 			"",
 			"Where to write the generated Sudoku (optional)",
+		)
+
+		a.timeout = a.flagSet.Duration(
+			"timeout",
+			time.Second*2,
+			"Timeout after which the generate is forced to complete.",
 		)
 
 		generatorAlgorithms := *generator.AllGenerationAlgorithms()
@@ -87,7 +97,7 @@ Difficulty: %f
 		return
 	}
 
-	sudoku, err := generator.Generate(*a.difficulty)
+	sudoku, err := generator.Generate(*a.difficulty, *a.timeout)
 	if err != nil {
 		fmt.Printf("An error was thrown while generating a Sudoku. Error:\n%s", err.Error())
 		return

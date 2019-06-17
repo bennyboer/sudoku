@@ -47,17 +47,17 @@ func (generator *SudokuGeneratorSimple) simpleGenerate(difficulty float64, group
 	generator.sudoku = sudoku
 }
 
-func (generator *SudokuGeneratorSimple) Generate(difficulty float64) (*model.Sudoku, error) {
-	var waitgroup = &sync.WaitGroup{}
+func (generator *SudokuGeneratorSimple) Generate(difficulty float64, timeout time.Duration) (*model.Sudoku, error) {
+	var waitgroup sync.WaitGroup
 
 	if difficulty > 1.0 || difficulty < 0 {
 		return nil, errors.New("the difficulty must be between 0 and 1")
 	}
 
 	waitgroup.Add(1)
-	go generator.simpleGenerate(difficulty, waitgroup)
+	go generator.simpleGenerate(difficulty, &waitgroup)
 	go func() {
-		time.Sleep(2 * time.Second)
+		time.Sleep(timeout)
 		generator.isCancelled = true
 	}()
 
@@ -65,11 +65,11 @@ func (generator *SudokuGeneratorSimple) Generate(difficulty float64) (*model.Sud
 	return generator.sudoku, nil
 }
 
-func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64) (*model.Sudoku, error) {
+func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64, timeout time.Duration) (*model.Sudoku, error) {
 	solver := strategy.Solver{}
 	sudoku := model.EmptySudoku()
 	_, err := solver.Solve(sudoku)
-	waitgroup := &sync.WaitGroup{}
+	var waitgroup sync.WaitGroup
 	if err != nil {
 		return nil, err
 	}
@@ -79,9 +79,9 @@ func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64) (*model
 	}
 
 	waitgroup.Add(1)
-	go generator.backtrack(sudoku, difficulty, waitgroup)
+	go generator.backtrack(sudoku, difficulty, &waitgroup)
 	go func() {
-		time.Sleep(2 * time.Second)
+		time.Sleep(timeout)
 		generator.isCancelled = true
 	}()
 	// Waiting for results
@@ -100,25 +100,41 @@ func (generator *SudokuGeneratorDifficulty) backtrack(sudoku *model.Sudoku, diff
 		y = rand.Intn(9)
 	}
 
+	backupSudoku, _ := model.LoadSudoku(sudoku.SaveSudoku())
+
 	sudoku.Cells[x][y].SetValue(0)
 	sudokuCopy, _ := model.LoadSudoku(sudoku.SaveSudoku())
 
 	success, err := solver.Solve(sudokuCopy)
 	localDifficulty := solver.GetLastPassDifficulty()
 
-	if success && err == nil {
-		if localDifficulty > generator.difficulty {
-			generator.sudoku = sudoku
-			generator.difficulty = localDifficulty
-		}
-	}
-
 	if (!success || err != nil) ||
 		math.Abs(difficulty-localDifficulty) < 0.05 ||
-		difficulty < localDifficulty ||
+		localDifficulty > difficulty+0.05 ||
 		generator.isCancelled {
+
+		if generator.isCancelled {
+			group.Done()
+			return
+		}
+
+		group.Add(1)
+		go generator.backtrack(backupSudoku, difficulty, group)
 		group.Done()
 		return
+	}
+
+	if success {
+		if localDifficulty > generator.difficulty && !generator.isCancelled {
+			generator.lock.Lock()
+			generator.sudoku = sudoku
+			generator.difficulty = localDifficulty
+			generator.lock.Unlock()
+		}
+
+		if math.Abs(difficulty-localDifficulty) < 0.05 {
+			generator.isCancelled = true
+		}
 	}
 
 	group.Add(1)
