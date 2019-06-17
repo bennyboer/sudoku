@@ -67,3 +67,7 @@ Furthermore after **each three columns**, there are **two spaces** instead of on
 Lastly after **each number** a space is inserted to split them inside the blocks.
 The number `0` is a special number, and is treated as an empty Sudoku cell. 
 Besides `0`, valid numbers are only in range `1` to `9`, all other numbers will be reported as error.
+
+## Documentation
+
+See the package documentation on [godoc.org](https://godoc.org/github.com/ob-algdatii-ss19/leistungsnachweis-sudo).
