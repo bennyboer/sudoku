@@ -2,6 +2,7 @@ package generator
 
 import (
 	"errors"
+	stack "github.com/golang-collections/collections/stack"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking"
 	s "github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking/strategy"
@@ -78,8 +79,11 @@ func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64, timeout
 		return nil, errors.New("the difficulty must be between 0 and 1")
 	}
 
+	sudokuStack := stack.New()
+	sudokuStack.Push(sudoku)
+
 	waitgroup.Add(1)
-	go generator.backtrack(sudoku, difficulty, &waitgroup)
+	go generator.backtrack(sudokuStack, difficulty, &waitgroup)
 	go func() {
 		time.Sleep(timeout)
 		generator.isCancelled = true
@@ -90,20 +94,19 @@ func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64, timeout
 	return generator.sudoku, nil
 }
 
-func (generator *SudokuGeneratorDifficulty) backtrack(sudoku *model.Sudoku, difficulty float64, group *sync.WaitGroup) {
+func (generator *SudokuGeneratorDifficulty) backtrack(sudokuStack *stack.Stack, difficulty float64, group *sync.WaitGroup) {
 	solver := strategy.Solver{}
 
 	x := rand.Intn(9)
 	y := rand.Intn(9)
+	sudoku := sudokuStack.Peek().(*model.Sudoku)
 	for sudoku.Cells[x][y].Value() == 0 {
 		x = rand.Intn(9)
 		y = rand.Intn(9)
 	}
 
-	backupSudoku, _ := model.LoadSudoku(sudoku.SaveSudoku())
-
 	sudoku.Cells[x][y].SetValue(0)
-	sudokuCopy, _ := model.LoadSudoku(sudoku.SaveSudoku())
+	sudokuCopy := sudokuStack.Peek().(*model.Sudoku)
 
 	success, err := solver.Solve(sudokuCopy)
 	localDifficulty := solver.GetLastPassDifficulty()
@@ -118,8 +121,15 @@ func (generator *SudokuGeneratorDifficulty) backtrack(sudoku *model.Sudoku, diff
 			return
 		}
 
+		sudokuStack.Pop()
+		if sudokuStack.Len() == 0 {
+			generator.isCancelled = true
+			group.Done()
+			return
+		}
+
 		group.Add(1)
-		go generator.backtrack(backupSudoku, difficulty, group)
+		go generator.backtrack(sudokuStack, difficulty, group)
 		group.Done()
 		return
 	}
@@ -137,7 +147,8 @@ func (generator *SudokuGeneratorDifficulty) backtrack(sudoku *model.Sudoku, diff
 		}
 	}
 
+	sudokuStack.Push(sudoku)
 	group.Add(1)
-	go generator.backtrack(sudoku, difficulty, group)
+	go generator.backtrack(sudokuStack, difficulty, group)
 	group.Done()
 }
