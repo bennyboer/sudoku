@@ -138,9 +138,7 @@ func (generator *SudokuGeneratorDifficulty) find(sudokuSrcPtr *[][]int, difficul
 		newSudokuSrc := make([][]int, model.SudokuSize)
 		for rowIndex, rowValues := range sudokuSrc {
 			newSudokuSrc[rowIndex] = make([]int, model.SudokuSize)
-			for columnIndex, value := range rowValues {
-				newSudokuSrc[rowIndex][columnIndex] = value
-			}
+			copy(newSudokuSrc[rowIndex], rowValues)
 		}
 		newSudokuSrc[x][y] = 0 // Set cell value to "empty"
 
@@ -155,7 +153,6 @@ func (generator *SudokuGeneratorDifficulty) find(sudokuSrcPtr *[][]int, difficul
 
 		// Check if difficulty meets the requirements
 		difficultyDiff := math.Abs(difficulty - localDifficulty)
-		fmt.Printf("Deviation: %f\n", difficultyDiff)
 		if difficultyDiff > maxDeviation {
 			// Sudoku is not good enough
 
