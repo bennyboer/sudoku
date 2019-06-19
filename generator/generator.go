@@ -3,7 +3,6 @@ package generator
 import (
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 	"math/rand"
-	"sync"
 	"time"
 )
 
@@ -22,9 +21,8 @@ type SudokuGeneratorSimple struct {
 
 type SudokuGeneratorDifficulty struct {
 	difficulty  float64
-	sudoku      *model.Sudoku
+	sudokuSrc   *[][]int
 	isCancelled bool
-	lock        sync.RWMutex
 }
 
 func NewBacktrackingGenerator() *SudokuGeneratorSimple {
@@ -36,7 +34,7 @@ func NewBacktrackingGenerator() *SudokuGeneratorSimple {
 func NewDifficultyGenerator() *SudokuGeneratorDifficulty {
 	rand.Seed(time.Now().UnixNano())
 
-	return &SudokuGeneratorDifficulty{0, nil, false, sync.RWMutex{}}
+	return &SudokuGeneratorDifficulty{0, nil, false}
 }
 
 func AllGenerationAlgorithms() *map[string]SudokuGenerator {

@@ -2,7 +2,7 @@ package generator
 
 import (
 	"errors"
-	stack "github.com/golang-collections/collections/stack"
+	"fmt"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/model"
 	"github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking"
 	s "github.com/ob-algdatii-ss19/leistungsnachweis-sudo/solver/backtracking/strategy"
@@ -67,88 +67,124 @@ func (generator *SudokuGeneratorSimple) Generate(difficulty float64, timeout tim
 }
 
 func (generator *SudokuGeneratorDifficulty) Generate(difficulty float64, timeout time.Duration) (*model.Sudoku, error) {
-	solver := strategy.Solver{}
-	sudoku := model.EmptySudoku()
-	_, err := solver.Solve(sudoku)
-	var waitgroup sync.WaitGroup
-	if err != nil {
-		return nil, err
-	}
-
 	if difficulty > 1.0 || difficulty < 0 {
 		return nil, errors.New("the difficulty must be between 0 and 1")
 	}
 
-	sudokuStack := stack.New()
-	sudokuStack.Push(sudoku)
-
+	var waitgroup sync.WaitGroup
 	waitgroup.Add(1)
-	go generator.backtrack(sudokuStack, difficulty, &waitgroup)
+
+	go generator.start(difficulty, 0.05, &waitgroup)
+
 	go func() {
 		time.Sleep(timeout)
 		generator.isCancelled = true
+		fmt.Println("Warning: Generator ran into timeout. Cancelling...")
 	}()
+
 	// Waiting for results
 	waitgroup.Wait()
 
-	return generator.sudoku, nil
+	// Load best sudoku which the generator could come up with
+	bestSudoku, _ := model.LoadSudoku(generator.sudokuSrc)
+	return bestSudoku, nil
 }
 
-func (generator *SudokuGeneratorDifficulty) backtrack(sudokuStack *stack.Stack, difficulty float64, group *sync.WaitGroup) {
-	solver := strategy.Solver{}
+// Try to generate a Sudoku using backtracking and measuring the difficulty of a Sudoku.
+// Will return whether the generator could find a Sudoku with the given difficulty.
+func (generator *SudokuGeneratorDifficulty) start(difficulty float64, maxDeviation float64, group *sync.WaitGroup) {
+	foundSudoku := false
+	for !foundSudoku {
+		// Generate random Sudoku as starting point
+		solver := strategy.Solver{}
+		sudoku := model.EmptySudoku()
+		_, err := solver.Solve(sudoku)
+		if err != nil {
+			fmt.Printf("Error: Could not solve Sudoku.. Error:\n%s", err.Error())
+			break
+		}
 
-	x := rand.Intn(9)
-	y := rand.Intn(9)
-	sudoku := sudokuStack.Peek().(*model.Sudoku)
-	for sudoku.Cells[x][y].Value() == 0 {
-		x = rand.Intn(9)
-		y = rand.Intn(9)
-	}
+		sudokuSrc := sudoku.SaveSudoku()
+		generator.sudokuSrc = sudokuSrc
 
-	sudoku.Cells[x][y].SetValue(0)
-	sudokuCopy := sudokuStack.Peek().(*model.Sudoku)
+		foundSudoku = generator.find(sudokuSrc, difficulty, maxDeviation, 1.0, group)
 
-	success, err := solver.Solve(sudokuCopy)
-	localDifficulty := solver.GetLastPassDifficulty()
-
-	if (!success || err != nil) ||
-		math.Abs(difficulty-localDifficulty) < 0.05 ||
-		localDifficulty > difficulty+0.05 ||
-		generator.isCancelled {
-
+		// Check if run into timeout
 		if generator.isCancelled {
-			group.Done()
-			return
-		}
-
-		sudokuStack.Pop()
-		if sudokuStack.Len() == 0 {
-			generator.isCancelled = true
-			group.Done()
-			return
-		}
-
-		group.Add(1)
-		go generator.backtrack(sudokuStack, difficulty, group)
-		group.Done()
-		return
-	}
-
-	if success {
-		if localDifficulty > generator.difficulty && !generator.isCancelled {
-			generator.lock.Lock()
-			generator.sudoku = sudoku
-			generator.difficulty = localDifficulty
-			generator.lock.Unlock()
-		}
-
-		if math.Abs(difficulty-localDifficulty) < 0.05 {
-			generator.isCancelled = true
+			break
 		}
 	}
 
-	sudokuStack.Push(sudoku)
-	group.Add(1)
-	go generator.backtrack(sudokuStack, difficulty, group)
 	group.Done()
+}
+
+func (generator *SudokuGeneratorDifficulty) find(sudokuSrcPtr *[][]int, difficulty float64, maxDeviation float64, bestDeviation float64, group *sync.WaitGroup) bool {
+	sudokuSrc := *sudokuSrcPtr
+
+	for {
+		if generator.isCancelled {
+			return false
+		}
+
+		// Choose random cell coordinates in the Sudoku
+		x := rand.Intn(9)
+		y := rand.Intn(9)
+		for sudokuSrc[x][y] == 0 {
+			x = rand.Intn(9)
+			y = rand.Intn(9)
+		}
+
+		// Copy old sudoku src and empty cell of randomly chosen cell
+		newSudokuSrc := make([][]int, model.SudokuSize)
+		for rowIndex, rowValues := range sudokuSrc {
+			newSudokuSrc[rowIndex] = make([]int, model.SudokuSize)
+			for columnIndex, value := range rowValues {
+				newSudokuSrc[rowIndex][columnIndex] = value
+			}
+		}
+		newSudokuSrc[x][y] = 0 // Set cell value to "empty"
+
+		// Load the altered Sudoku and try to solve it
+		solveSudoku, _ := model.LoadSudoku(&newSudokuSrc)
+		solver := strategy.Solver{}
+		success, err := solver.Solve(solveSudoku)
+		if err != nil || !success {
+			return false
+		}
+		localDifficulty := solver.GetLastPassDifficulty()
+
+		// Check if difficulty meets the requirements
+		difficultyDiff := math.Abs(difficulty - localDifficulty)
+		fmt.Printf("Deviation: %f\n", difficultyDiff)
+		if difficultyDiff > maxDeviation {
+			// Sudoku is not good enough
+
+			// Check if Sudoku is the best one yet
+			if difficultyDiff < bestDeviation {
+				bestDeviation = difficultyDiff
+				generator.sudokuSrc = &newSudokuSrc // Save Sudoku since it is the best one yet
+			}
+
+			// Check if difficulty is already too high.
+			// Would not make sense to continue if it is already way to high.
+			if localDifficulty > difficulty {
+				return false
+			}
+
+			// Check if timeout has been reached
+			if generator.isCancelled {
+				return false
+			}
+
+			// Try to find a better Sudoku by emptying another cell
+			foundBetterSudoku := generator.find(&newSudokuSrc, difficulty, maxDeviation, bestDeviation, group)
+			if foundBetterSudoku {
+				return true
+			}
+		} else {
+			// Found Sudoku that's good enough! -> Save Sudoku and return
+			generator.sudokuSrc = &newSudokuSrc
+			return true
+		}
+	}
 }
