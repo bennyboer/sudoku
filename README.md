@@ -73,4 +73,4 @@ Besides `0`, valid numbers are only in range `1` to `9`, all other numbers will 
 See the package documentation on [godoc.org](https://godoc.org/github.com/ob-algdatii-ss19/leistungsnachweis-sudo).
 
 ## Information
-You can read up on our strategies here [Strategies](strategies.md)
+You can read up on our implemented strategies here [Strategies](strategy.md)
