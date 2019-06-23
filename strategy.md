@@ -1,3 +1,8 @@
+---
+title: Strategies
+---
+
+
 ## Strategies
 The strategies currently implemented and used are:
 - Hidden Single
