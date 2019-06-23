@@ -12,4 +12,4 @@ The strategies currently implemented and used are:
 
 More patterns can easily be implemented. More can be found here: (Strategies)[https://www.thinkgym.de/r%C3%A4tselarten/sudoku/l%C3%B6sungsstrategien/]
 
-Back to (Main)[readme.md]
+Back to (Main)[README.md]
