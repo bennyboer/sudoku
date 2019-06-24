@@ -72,6 +72,8 @@ Besides `0`, valid numbers are only in range `1` to `9`, all other numbers will 
 
 You can read up on our implemented strategies here: [Strategies](strategy.md)
 
+If you are interested in our generator, you can read up on it here: [Generator](generation.md)
+
 ## Documentation
 
 See the package documentation on [godoc.org](https://godoc.org/github.com/ob-algdatii-ss19/leistungsnachweis-sudo).
